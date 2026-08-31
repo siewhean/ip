@@ -28,6 +28,16 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 Ensure that Java 25 is used when running the application or build tasks. On macOS, use `sdk use java 25.0.3.fx-zulu` to switch to Java 25 if needed.
 
+## Coding Standards:
+
+All Java code in this project MUST strictly follow the project's `seedu-java-coding-standard` skill based on the [SE-EDU Java Coding Standard (Intermediate)](https://se-education.org/guides/conventions/java/intermediate.html). Key rules include:
+* Mandatory Javadoc comments for all classes, public methods, and non-trivial fields.
+* Method summaries must start with third-person present tense verbs (e.g., `Returns ...`, `Runs ...`).
+* PascalCase for classes/enums, camelCase for variables/methods, SCREAMING_SNAKE_CASE for constants.
+* 4-space indentation, 120-character line length limit, K&R (Egyptian) brace style.
+* Control statements (`if`, `while`, `for`, `do-while`) MUST always use braces `{ }`.
+* Explicit imports only (never use wildcard `*` imports).
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
