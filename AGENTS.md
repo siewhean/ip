@@ -38,8 +38,12 @@ All Java code in this project MUST strictly follow the project's `seedu-java-cod
 * Control statements (`if`, `while`, `for`, `do-while`) MUST always use braces `{ }`.
 * Explicit imports only (never use wildcard `*` imports).
 
-## Git
+## Git Conventions:
 
-Use lightweight tags unless the user requests an annotated tag.
-When proposing or creating a commit message, include enough detail to explain the rationale for the change.
-Do not commit or push unless explicitly asked.
+All Git commits, messages, and branches in this project MUST strictly adhere to the `seedu-git-standard` skill based on the [SE-EDU Git Conventions Guide](https://se-education.org/guides/conventions/git.html). Key rules include:
+* **Subject line**: Imperative mood (e.g., `Add ...`, `Fix ...`, not `Added`/`Adding`), capitalized, no trailing period, $\le$ 50 characters (hard limit: 72 characters).
+* **Commit body**: Required for non-trivial commits, hard-wrapped at 72 characters, separated from the subject by a blank line.
+* **Content focus**: Explain WHAT and WHY, not HOW. Structure: `{current situation} -> {why change} -> {what is being done (Let's ...)} -> {rationale/tradeoffs}`.
+* **Branches**: Use `kebab-case` (e.g., `refactor-ui-tests`) or `issueNumber-keywords` (e.g., `123-fix-bug`).
+* **Tags**: Use lightweight tags unless annotated tag is explicitly requested.
+* **Safety**: Do not commit or push unless explicitly asked.
