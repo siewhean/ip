@@ -47,3 +47,9 @@ All Git commits, messages, and branches in this project MUST strictly adhere to 
 * **Branches**: Use `kebab-case` (e.g., `refactor-ui-tests`) or `issueNumber-keywords` (e.g., `123-fix-bug`).
 * **Tags**: Use lightweight tags unless annotated tag is explicitly requested.
 * **Safety**: Do not commit or push unless explicitly asked.
+
+## UI Testing & Verification:
+
+After EVERY code update, you MUST:
+1. Update `test/ui-test-plan.md` if the code change introduces new commands, modifies expected output formats, or adds/updates test cases.
+2. Invoke the `test-ui` skill (e.g., run `python3 .agents/skills/test-ui/scripts/run_ui_tests.py`) to verify the implementation against the test plan and ensure all tests pass before completing the turn.
