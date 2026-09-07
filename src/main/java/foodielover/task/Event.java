@@ -1,3 +1,5 @@
+package foodielover.task;
+
 /**
  * Represents an event task that occurs within a specific time period.
  */

@@ -1,3 +1,5 @@
+package foodielover.task;
+
 /**
  * Represents a deadline task that needs to be done before a specific time.
  */

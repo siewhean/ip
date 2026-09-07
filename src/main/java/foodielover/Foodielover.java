@@ -1,4 +1,11 @@
+package foodielover;
+
 import java.util.Scanner;
+
+import foodielover.task.Deadline;
+import foodielover.task.Event;
+import foodielover.task.Task;
+import foodielover.task.Todo;
 
 /**
  * Entry point for the Foodielover chatbot application.
@@ -92,7 +99,8 @@ public class Foodielover {
         } else if (input.startsWith("event")) {
             addEvent(input);
         } else {
-            addGenericTask(input);
+            // addGenericTask(input);
+            System.out.println("This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list");
         }
     }
 
@@ -117,6 +125,9 @@ public class Foodielover {
             tasks[taskIndex].markAsDone();
             System.out.println("Nice! I've marked this task as done:");
             System.out.println("  " + tasks[taskIndex]);
+        }
+        else {
+            System.out.println("This is not a valid input. Please try again.");
         }
     }
 
