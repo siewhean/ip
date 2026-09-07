@@ -1,4 +1,11 @@
+package foodielover;
+
 import java.util.Scanner;
+
+import foodielover.task.Deadline;
+import foodielover.task.Event;
+import foodielover.task.Task;
+import foodielover.task.Todo;
 
 /**
  * Entry point for the Foodielover chatbot application.

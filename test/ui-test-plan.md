@@ -6,8 +6,7 @@ Tests are executed using the `test-ui` skill and runner script `.agents/skills/t
 ---
 
 ## Test Environment
-
-- **Application Entrypoint**: `Foodielover.java`
+- **Application Entrypoint**: `foodielover.Foodielover` (`src/main/java/foodielover/Foodielover.java`)
 - **Java Version**: Java 25
 - **Indentation / Formatting**: SE-EDU Java Coding Standard
 
