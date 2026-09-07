@@ -61,7 +61,7 @@ public class Foodielover {
         Scanner scanner = new Scanner(System.in);
         String input = "";
 
-        while (!input.equals("bye")) {
+        while (!input.equals("bye") && scanner.hasNextLine()) {
             input = scanner.nextLine();
             System.out.println(DIVIDER_LINE);
 
@@ -81,18 +81,18 @@ public class Foodielover {
     private static void handleCommand(String input) {
         if (input.equals("list")) {
             listTasks();
-        } else if (input.startsWith("mark ")) {
+        } else if (input.equals("mark") || input.startsWith("mark ")) {
             markTask(input);
-        } else if (input.startsWith("unmark ")) {
+        } else if (input.equals("unmark") || input.startsWith("unmark ")) {
             unmarkTask(input);
-        } else if (input.startsWith("todo")) {
+        } else if (input.equals("todo") || input.startsWith("todo ")) {
             addTodo(input);
-        } else if (input.startsWith("deadline")) {
+        } else if (input.equals("deadline") || input.startsWith("deadline ")) {
             addDeadline(input);
-        } else if (input.startsWith("event")) {
+        } else if (input.equals("event") || input.startsWith("event ")) {
             addEvent(input);
         } else {
-            addGenericTask(input);
+            System.out.println("This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list");
         }
     }
 
@@ -112,11 +112,16 @@ public class Foodielover {
      * @param input Command string containing the 1-based task index.
      */
     private static void markTask(String input) {
-        int taskIndex = Integer.parseInt(input.substring(5).trim()) - 1;
+        Integer taskIndex = parseTaskIndex(input, "mark");
+        if (taskIndex == null) {
+            return;
+        }
         if (taskIndex >= 0 && taskIndex < taskCount) {
             tasks[taskIndex].markAsDone();
             System.out.println("Nice! I've marked this task as done:");
             System.out.println("  " + tasks[taskIndex]);
+        } else {
+            System.out.println("This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
         }
     }
 
@@ -126,11 +131,16 @@ public class Foodielover {
      * @param input Command string containing the 1-based task index.
      */
     private static void unmarkTask(String input) {
-        int taskIndex = Integer.parseInt(input.substring(7).trim()) - 1;
+        Integer taskIndex = parseTaskIndex(input, "unmark");
+        if (taskIndex == null) {
+            return;
+        }
         if (taskIndex >= 0 && taskIndex < taskCount) {
             tasks[taskIndex].markAsUndone();
             System.out.println("OK, I've marked this task as not done yet:");
             System.out.println("  " + tasks[taskIndex]);
+        } else {
+            System.out.println("This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
         }
     }
 
@@ -141,6 +151,10 @@ public class Foodielover {
      */
     private static void addTodo(String input) {
         String description = input.substring(4).trim();
+        if (description.isEmpty()) {
+            System.out.println("Please enter a description after 'todo'.");
+            return;
+        }
         addTask(new Todo(description));
     }
 
@@ -151,8 +165,16 @@ public class Foodielover {
      */
     private static void addDeadline(String input) {
         int byIndex = input.indexOf("/by");
+        if (byIndex < 0) {
+            System.out.println("Please include a deadline using '/by'.");
+            return;
+        }
         String description = input.substring(8, byIndex).trim();
         String by = input.substring(byIndex + 3).trim();
+        if (description.isEmpty() || by.isEmpty()) {
+            System.out.println("Please provide both a deadline description and a value after '/by'.");
+            return;
+        }
         addTask(new Deadline(description, by));
     }
 
@@ -164,9 +186,17 @@ public class Foodielover {
     private static void addEvent(String input) {
         int fromIndex = input.indexOf("/from");
         int toIndex = input.indexOf("/to");
+        if (fromIndex < 0 || toIndex < 0 || fromIndex >= toIndex) {
+            System.out.println("Please include an event description, '/from' time, and '/to' time.");
+            return;
+        }
         String description = input.substring(5, fromIndex).trim();
         String from = input.substring(fromIndex + 5, toIndex).trim();
         String to = input.substring(toIndex + 3).trim();
+        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+            System.out.println("Please provide an event description and values after '/from' and '/to'.");
+            return;
+        }
         addTask(new Event(description, from, to));
     }
 
@@ -176,6 +206,10 @@ public class Foodielover {
      * @param task Task instance to be added.
      */
     private static void addTask(Task task) {
+        if (taskCount >= MAX_TASKS) {
+            System.out.println("Your task list is full. Please remove a task before adding another one.");
+            return;
+        }
         tasks[taskCount] = task;
         taskCount++;
         System.out.println("Got it. I've added this task:");
@@ -192,5 +226,26 @@ public class Foodielover {
         tasks[taskCount] = new Task(input);
         taskCount++;
         System.out.println("added: " + input);
+    }
+
+    /**
+     * Parses a 1-based task number from a mark or unmark command.
+     *
+     * @param input Command containing the task number.
+     * @param command Command keyword used in the input.
+     * @return Zero-based task index, or null when the input is invalid.
+     */
+    private static Integer parseTaskIndex(String input, String command) {
+        String argument = input.substring(command.length()).trim();
+        if (argument.isEmpty()) {
+            System.out.println("Please enter something after '" + command + "'.");
+            return null;
+        }
+        try {
+            return Integer.parseInt(argument) - 1;
+        } catch (NumberFormatException exception) {
+            System.out.println("Please enter a number after '" + command + "'.");
+            return null;
+        }
     }
 }
