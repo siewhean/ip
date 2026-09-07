@@ -16,17 +16,17 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..
 TEST_PLAN_PATH = os.path.join(PROJECT_ROOT, "test", "ui-test-plan.md")
 BIN_DIR = os.path.join(PROJECT_ROOT, "bin")
 SRC_DIR = os.path.join(PROJECT_ROOT, "src", "main", "java")
-MAIN_CLASS = "Foodielover"
+MAIN_CLASS = "foodielover.Foodielover"
 
 
 def compile_java():
     """Compiles all Java source files into the bin directory."""
     os.makedirs(BIN_DIR, exist_ok=True)
-    java_files = [
-        os.path.join(SRC_DIR, f)
-        for f in os.listdir(SRC_DIR)
-        if f.endswith(".java")
-    ]
+    java_files = []
+    for root, _, files in os.walk(SRC_DIR):
+        for f in files:
+            if f.endswith(".java"):
+                java_files.append(os.path.join(root, f))
     if not java_files:
         print(f"Error: No Java source files found in {SRC_DIR}", file=sys.stderr)
         sys.exit(1)
