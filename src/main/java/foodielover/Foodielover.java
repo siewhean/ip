@@ -75,7 +75,11 @@ public class Foodielover {
             if (input.equals("bye")) {
                 break;
             }
-            handleCommand(input);
+            try {
+                handleCommand(input);
+            } catch (FoodieloverException exception) {
+                System.out.println(exception.getMessage());
+            }
             System.out.println(DIVIDER_LINE);
         }
     }
@@ -84,8 +88,9 @@ public class Foodielover {
      * Dispatches user input to the corresponding action handler.
      *
      * @param input Raw command line entered by the user.
+     * @throws FoodieloverException If the command keyword is unrecognized or execution fails.
      */
-    private static void handleCommand(String input) {
+    private static void handleCommand(String input) throws FoodieloverException {
         if (input.equals("list")) {
             listTasks();
         } else if (input.equals("mark") || input.startsWith("mark ")) {
@@ -99,7 +104,9 @@ public class Foodielover {
         } else if (input.equals("event") || input.startsWith("event ")) {
             addEvent(input);
         } else {
-            System.out.println("This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list");
+            throw new FoodieloverException(
+                    "This is not a valid input. Please try again. "
+                            + "With the following: add, mark, unmark, todo, deadline, event, list");
         }
     }
 
@@ -117,50 +124,46 @@ public class Foodielover {
      * Marks the specified task as completed.
      *
      * @param input Command string containing the 1-based task index.
+     * @throws FoodieloverException If the task index is missing, non-numeric, or out of range.
      */
-    private static void markTask(String input) {
-        Integer taskIndex = parseTaskIndex(input, "mark");
-        if (taskIndex == null) {
-            return;
+    private static void markTask(String input) throws FoodieloverException {
+        int taskIndex = parseTaskIndex(input, "mark");
+        if (taskIndex < 0 || taskIndex >= taskCount) {
+            throw new FoodieloverException(
+                    "This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
         }
-        if (taskIndex >= 0 && taskIndex < taskCount) {
-            tasks[taskIndex].markAsDone();
-            System.out.println("Nice! I've marked this task as done:");
-            System.out.println("  " + tasks[taskIndex]);
-        } else {
-            System.out.println("This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
-        }
+        tasks[taskIndex].markAsDone();
+        System.out.println("Nice! I've marked this task as done:");
+        System.out.println("  " + tasks[taskIndex]);
     }
 
     /**
      * Marks the specified task as not completed.
      *
      * @param input Command string containing the 1-based task index.
+     * @throws FoodieloverException If the task index is missing, non-numeric, or out of range.
      */
-    private static void unmarkTask(String input) {
-        Integer taskIndex = parseTaskIndex(input, "unmark");
-        if (taskIndex == null) {
-            return;
+    private static void unmarkTask(String input) throws FoodieloverException {
+        int taskIndex = parseTaskIndex(input, "unmark");
+        if (taskIndex < 0 || taskIndex >= taskCount) {
+            throw new FoodieloverException(
+                    "This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
         }
-        if (taskIndex >= 0 && taskIndex < taskCount) {
-            tasks[taskIndex].markAsUndone();
-            System.out.println("OK, I've marked this task as not done yet:");
-            System.out.println("  " + tasks[taskIndex]);
-        } else {
-            System.out.println("This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
-        }
+        tasks[taskIndex].markAsUndone();
+        System.out.println("OK, I've marked this task as not done yet:");
+        System.out.println("  " + tasks[taskIndex]);
     }
 
     /**
      * Parses and adds a Todo task.
      *
      * @param input Command string containing the todo description.
+     * @throws FoodieloverException If the todo description is empty or list is full.
      */
-    private static void addTodo(String input) {
+    private static void addTodo(String input) throws FoodieloverException {
         String description = input.substring(4).trim();
         if (description.isEmpty()) {
-            System.out.println("Please enter a description after 'todo'.");
-            return;
+            throw new FoodieloverException("Please enter a description after 'todo'.");
         }
         addTask(new Todo(description));
     }
@@ -169,18 +172,18 @@ public class Foodielover {
      * Parses and adds a Deadline task.
      *
      * @param input Command string containing the deadline description and '/by' parameter.
+     * @throws FoodieloverException If '/by' is missing, fields are empty, or list is full.
      */
-    private static void addDeadline(String input) {
+    private static void addDeadline(String input) throws FoodieloverException {
         int byIndex = input.indexOf("/by");
         if (byIndex < 0) {
-            System.out.println("Please include a deadline using '/by'.");
-            return;
+            throw new FoodieloverException("Please include a deadline using '/by'.");
         }
         String description = input.substring(8, byIndex).trim();
         String by = input.substring(byIndex + 3).trim();
         if (description.isEmpty() || by.isEmpty()) {
-            System.out.println("Please provide both a deadline description and a value after '/by'.");
-            return;
+            throw new FoodieloverException(
+                    "Please provide both a deadline description and a value after '/by'.");
         }
         addTask(new Deadline(description, by));
     }
@@ -189,20 +192,21 @@ public class Foodielover {
      * Parses and adds an Event task.
      *
      * @param input Command string containing description, '/from', and '/to' parameters.
+     * @throws FoodieloverException If delimiters are missing, fields are empty, or list is full.
      */
-    private static void addEvent(String input) {
+    private static void addEvent(String input) throws FoodieloverException {
         int fromIndex = input.indexOf("/from");
         int toIndex = input.indexOf("/to");
         if (fromIndex < 0 || toIndex < 0 || fromIndex >= toIndex) {
-            System.out.println("Please include an event description, '/from' time, and '/to' time.");
-            return;
+            throw new FoodieloverException(
+                    "Please include an event description, '/from' time, and '/to' time.");
         }
         String description = input.substring(5, fromIndex).trim();
         String from = input.substring(fromIndex + 5, toIndex).trim();
         String to = input.substring(toIndex + 3).trim();
         if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
-            System.out.println("Please provide an event description and values after '/from' and '/to'.");
-            return;
+            throw new FoodieloverException(
+                    "Please provide an event description and values after '/from' and '/to'.");
         }
         addTask(new Event(description, from, to));
     }
@@ -211,11 +215,12 @@ public class Foodielover {
      * Stores a typed task, increments the count, and prints confirmation.
      *
      * @param task Task instance to be added.
+     * @throws FoodieloverException If maximum task storage capacity is reached.
      */
-    private static void addTask(Task task) {
+    private static void addTask(Task task) throws FoodieloverException {
         if (taskCount >= MAX_TASKS) {
-            System.out.println("Your task list is full. Please remove a task before adding another one.");
-            return;
+            throw new FoodieloverException(
+                    "Your task list is full. Please remove a task before adding another one.");
         }
         tasks[taskCount] = task;
         taskCount++;
@@ -225,34 +230,22 @@ public class Foodielover {
     }
 
     /**
-     * Adds a generic task when no command keyword matches.
-     *
-     * @param input Raw task description.
-     */
-    private static void addGenericTask(String input) {
-        tasks[taskCount] = new Task(input);
-        taskCount++;
-        System.out.println("added: " + input);
-    }
-
-    /**
      * Parses a 1-based task number from a mark or unmark command.
      *
      * @param input Command containing the task number.
      * @param command Command keyword used in the input.
-     * @return Zero-based task index, or null when the input is invalid.
+     * @return Zero-based task index.
+     * @throws FoodieloverException If the argument is missing or not a valid number.
      */
-    private static Integer parseTaskIndex(String input, String command) {
+    private static int parseTaskIndex(String input, String command) throws FoodieloverException {
         String argument = input.substring(command.length()).trim();
         if (argument.isEmpty()) {
-            System.out.println("Please enter something after '" + command + "'.");
-            return null;
+            throw new FoodieloverException("Please enter something after '" + command + "'.");
         }
         try {
             return Integer.parseInt(argument) - 1;
         } catch (NumberFormatException exception) {
-            System.out.println("Please enter a number after '" + command + "'.");
-            return null;
+            throw new FoodieloverException("Please enter a number after '" + command + "'.");
         }
     }
 }
