@@ -1,5 +1,7 @@
 package foodielover;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import foodielover.task.Deadline;
@@ -22,17 +24,8 @@ public class Foodielover {
             + "| | | (_) | (_) | (_| | |  __/ | (_) \\ V /  __/ |          \n"
             + "|_|  \\___/ \\___/ \\__,_|_|\\___|_|\\___/ \\_/ \\___|_|          \n";
 
-    /** Maximum capacity of tasks supported by the list. */
-    private static final int MAX_TASKS = 100;
-
-    /** Minimum number of tasks allowed before deletion is disallowed. */
-    private static final int MIN_TASKS = 0;
-
     /** In-memory storage for tasks. */
-    private static final Task[] tasks = new Task[MAX_TASKS];
-
-    /** Number of tasks currently in the list. */
-    private static int taskCount = 0;
+    private static final List<Task> tasks = new ArrayList<>();
 
     /**
      * Runs the Foodielover application.
@@ -120,8 +113,8 @@ public class Foodielover {
      */
     private static void listTasks() {
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println((i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -133,13 +126,13 @@ public class Foodielover {
      */
     private static void markTask(String input) throws FoodieloverException {
         int taskIndex = parseTaskIndex(input, "mark");
-        if (taskIndex < 0 || taskIndex >= taskCount) {
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
             throw new FoodieloverException(
-                    "This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
+                    "This is not a valid task number. Please enter a number from 1 to " + tasks.size() + ".");
         }
-        tasks[taskIndex].markAsDone();
+        tasks.get(taskIndex).markAsDone();
         System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + tasks[taskIndex]);
+        System.out.println("  " + tasks.get(taskIndex));
     }
 
     /**
@@ -150,20 +143,20 @@ public class Foodielover {
      */
     private static void unmarkTask(String input) throws FoodieloverException {
         int taskIndex = parseTaskIndex(input, "unmark");
-        if (taskIndex < 0 || taskIndex >= taskCount) {
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
             throw new FoodieloverException(
-                    "This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
+                    "This is not a valid task number. Please enter a number from 1 to " + tasks.size() + ".");
         }
-        tasks[taskIndex].markAsUndone();
+        tasks.get(taskIndex).markAsUndone();
         System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + tasks[taskIndex]);
+        System.out.println("  " + tasks.get(taskIndex));
     }
 
     /**
      * Parses and adds a Todo task.
      *
      * @param input Command string containing the todo description.
-     * @throws FoodieloverException If the todo description is empty or list is full.
+     * @throws FoodieloverException If the todo description is empty.
      */
     private static void addTodo(String input) throws FoodieloverException {
         String description = input.substring(4).trim();
@@ -177,7 +170,7 @@ public class Foodielover {
      * Parses and adds a Deadline task.
      *
      * @param input Command string containing the deadline description and '/by' parameter.
-     * @throws FoodieloverException If '/by' is missing, fields are empty, or list is full.
+     * @throws FoodieloverException If '/by' is missing or fields are empty.
      */
     private static void addDeadline(String input) throws FoodieloverException {
         int byIndex = input.indexOf("/by");
@@ -197,7 +190,7 @@ public class Foodielover {
      * Parses and adds an Event task.
      *
      * @param input Command string containing description, '/from', and '/to' parameters.
-     * @throws FoodieloverException If delimiters are missing, fields are empty, or list is full.
+     * @throws FoodieloverException If delimiters are missing or fields are empty.
      */
     private static void addEvent(String input) throws FoodieloverException {
         int fromIndex = input.indexOf("/from");
@@ -224,52 +217,41 @@ public class Foodielover {
      */
     private static void addDelete(String input) throws FoodieloverException {
         int deleteIndex = parseTaskIndex(input, "delete");
-        if (deleteIndex < 0 || deleteIndex >= taskCount) {
+        if (deleteIndex < 0 || deleteIndex >= tasks.size()) {
             throw new FoodieloverException(
-                    "This is not a valid task number. Please enter a number from 1 to " + taskCount + ".");
+                    "This is not a valid task number. Please enter a number from 1 to " + tasks.size() + ".");
         } else {
             removeTask(deleteIndex);
         }
     }
 
     /**
-     * Stores a typed task, increments the count, and prints confirmation.
+     * Stores a typed task and prints confirmation.
      *
      * @param task Task instance to be added.
-     * @throws FoodieloverException If maximum task storage capacity is reached.
      */
-    private static void addTask(Task task) throws FoodieloverException {
-        if (taskCount >= MAX_TASKS) {
-            throw new FoodieloverException(
-                    "Your task list is full. Please remove a task before adding another one.");
-        }
-        tasks[taskCount] = task;
-        taskCount++;
+    private static void addTask(Task task) {
+        tasks.add(task);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**
-     * Removes the task at the specified zero-based index and shifts later tasks forward.
+     * Removes the task at the specified zero-based index.
      *
      * @param taskIndex Zero-based index of the task to remove.
      * @throws FoodieloverException If the task list is empty.
      */
     private static void removeTask(int taskIndex) throws FoodieloverException {
-        if (taskCount <= MIN_TASKS) {
+        if (tasks.isEmpty()) {
             throw new FoodieloverException(
                     "Your task list is empty. Please add a task before removing one.");
         }
 
-        Task removedTask = tasks[taskIndex];
-        for (int i = taskIndex; i < taskCount - 1; i++) {
-            tasks[i] = tasks[i + 1];
-        }
-        tasks[taskCount - 1] = null;
-        taskCount--;
+        Task removedTask = tasks.remove(taskIndex);
         System.out.println("Noted. I've removed this task:\n" + removedTask);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**

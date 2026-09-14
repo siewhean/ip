@@ -7,7 +7,7 @@ Tests are executed using the `test-ui` skill and runner script `.agents/skills/t
 
 ## Test Environment
 
-- **Application Entrypoint**: `Foodielover.java`
+- **Application Entrypoint**: `foodielover.Foodielover` (`src/main/java/foodielover/Foodielover.java`)
 - **Java Version**: Java 25
 - **Indentation / Formatting**: SE-EDU Java Coding Standard
 
@@ -612,4 +612,259 @@ Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
+```
+
+---
+
+### TC-17: Idempotent State Transitions and Status Toggling
+
+- **Aim**: Verify that repeating mark or unmark commands on the same task is safe, retains the correct state, and toggling back and forth preserves status.
+- **Inputs**:
+
+```
+todo write report
+mark 1
+mark 1
+unmark 1
+unmark 1
+mark 1
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [T][ ] write report
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] write report
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] write report
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] write report
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] write report
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] write report
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] write report
+```
+
+---
+
+### TC-18: List Depletion Lifecycle and Clean Index Reset
+
+- **Aim**: Verify that deleting all tasks until the list is empty properly resets bounds, rejects operations on the empty list, and resumes indexing cleanly from 1 upon adding new tasks.
+- **Inputs**:
+
+```
+todo task one
+deadline task two /by tomorrow
+event task three /from 2pm /to 4pm
+delete 2
+delete 1
+delete 1
+delete 1
+mark 1
+unmark 1
+list
+todo fresh task
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [T][ ] task one
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] task two (by: tomorrow)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] task three (from: 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[D][ ] task two (by: tomorrow)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[T][ ] task one
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[E][ ] task three (from: 2pm to: 4pm)
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+This is not a valid task number. Please enter a number from 1 to 0.
+____________________________________________________________
+____________________________________________________________
+This is not a valid task number. Please enter a number from 1 to 0.
+____________________________________________________________
+____________________________________________________________
+This is not a valid task number. Please enter a number from 1 to 0.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] fresh task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] fresh task
+```
+
+---
+
+### TC-19: Special Characters, Punctuation, and Complex Timestamps
+
+- **Aim**: Verify that task descriptions and parameters containing symbols, numbers, parentheses, and realistic timestamps are accepted and displayed accurately.
+- **Inputs**:
+
+```
+todo CS2113 Tutorial #4 (read pages 12-30) & submit PR!
+deadline project v1.0 /by 2026-10-15 23:59
+event Tech Symposium (Hall 2) /from 10:00 AM /to 4:30 PM
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [T][ ] CS2113 Tutorial #4 (read pages 12-30) & submit PR!
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] project v1.0 (by: 2026-10-15 23:59)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] Tech Symposium (Hall 2) (from: 10:00 AM to: 4:30 PM)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] CS2113 Tutorial #4 (read pages 12-30) & submit PR!
+2.[D][ ] project v1.0 (by: 2026-10-15 23:59)
+3.[E][ ] Tech Symposium (Hall 2) (from: 10:00 AM to: 4:30 PM)
+```
+
+---
+
+### TC-20: Numeric Boundary Extremes, Signed Integers, and Formatting Errors
+
+- **Aim**: Verify that integer overflows, signed numbers, decimals, and alphanumeric index errors are handled gracefully without crashing.
+- **Inputs**:
+
+```
+todo sample task
+mark +1
+mark 99999999999999999999
+delete 99999999999999999999
+unmark 1.5
+delete 2a
+mark #1
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [T][ ] sample task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] sample task
+____________________________________________________________
+____________________________________________________________
+Please enter a number after 'mark'.
+____________________________________________________________
+____________________________________________________________
+Please enter a number after 'delete'.
+____________________________________________________________
+____________________________________________________________
+Please enter a number after 'unmark'.
+____________________________________________________________
+____________________________________________________________
+Please enter a number after 'delete'.
+____________________________________________________________
+____________________________________________________________
+Please enter a number after 'mark'.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] sample task
+```
+
+---
+
+### TC-21: Whitespace Padding within Command Arguments
+
+- **Aim**: Verify that extra whitespace between command keywords and arguments, or around parameter delimiters, is trimmed correctly.
+- **Inputs**:
+
+```
+todo    padded description
+deadline   lab assignment   /by   tomorrow night
+event   workshop   /from   noon   /to   midnight
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [T][ ] padded description
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] lab assignment (by: tomorrow night)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] workshop (from: noon to: midnight)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] padded description
+2.[D][ ] lab assignment (by: tomorrow night)
+3.[E][ ] workshop (from: noon to: midnight)
 ```
