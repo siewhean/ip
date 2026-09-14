@@ -6,14 +6,14 @@ Tests are executed using the `test-ui` skill and runner script `.agents/skills/t
 ---
 
 ## Test Environment
-- **Application Entrypoint**: `foodielover.Foodielover` (`src/main/java/foodielover/Foodielover.java`)
+
+- **Application Entrypoint**: `Foodielover.java`
 - **Java Version**: Java 25
 - **Indentation / Formatting**: SE-EDU Java Coding Standard
 
 ---
 
 ## Test Cases
-
 
 ### TC-01: Greet and Exit
 
@@ -248,9 +248,11 @@ Please include an event description, '/from' time, and '/to' time.
 
 ---
 
-### TC-10: Unknown Commands and Unrecognized Inputs Interleaved with Valid Additions
-- **Aim**: Verify that unrecognized command strings output appropriate error messages without creating phantom tasks or corrupting task listing.
+### TC-10: Unknown Commands and Deletion Interleaved with Valid Additions
+
+- **Aim**: Verify that unrecognized command strings are rejected while a valid deletion removes the intended task without corrupting task listing.
 - **Inputs**:
+
 ```
 blah
 list
@@ -259,7 +261,9 @@ delete 1
 list
 bye
 ```
+
 - **Expected Output**:
+
 ```
 This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
 ____________________________________________________________
@@ -272,18 +276,21 @@ Got it. I've added this task:
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+Noted. I've removed this task:
+[T][ ] submit assignment
+Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
-1.[T][ ] submit assignment
 ```
 
 ---
 
 ### TC-11: Boundary and Out-of-Range Index Handling for Mark and Unmark
+
 - **Aim**: Verify that non-positive indices (0, -1) and indices exceeding the current list size produce bounds error messages without altering existing task completion states.
 - **Inputs**:
+
 ```
 todo read book
 todo return book
@@ -296,7 +303,9 @@ unmark 3
 list
 bye
 ```
+
 - **Expected Output**:
+
 ```
 This is not a valid task number. Please enter a number from 1 to 2.
 ____________________________________________________________
@@ -325,8 +334,10 @@ Here are the tasks in your list:
 ---
 
 ### TC-12: Malformed Deadline and Event Syntax (Missing Delimiters and Empty Fields)
+
 - **Aim**: Verify that empty descriptions before or after delimiters (`/by`, `/from`, `/to`) are rejected and do not increment task counts.
 - **Inputs**:
+
 ```
 deadline /by Sunday
 deadline    /by
@@ -338,7 +349,9 @@ deadline submit quiz /by tomorrow
 list
 bye
 ```
+
 - **Expected Output**:
+
 ```
 Please provide both a deadline description and a value after '/by'.
 ____________________________________________________________
@@ -370,8 +383,10 @@ Here are the tasks in your list:
 ---
 
 ### TC-13: Interleaved Positive and Negative Workflow (State Resilience)
+
 - **Aim**: Verify that interleaved invalid commands, bad index arguments, and malformed inputs do not corrupt task ordering, task counts, or completion states during an extended session.
 - **Inputs**:
+
 ```
 unknown_command
 list
@@ -392,7 +407,9 @@ mark 4
 list
 bye
 ```
+
 - **Expected Output**:
+
 ```
 This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
 ____________________________________________________________
@@ -462,8 +479,10 @@ Here are the tasks in your list:
 ---
 
 ### TC-14: Reject Command Prefix Collisions
+
 - **Aim**: Verify that inputs beginning with, but not equal to, a command keyword are rejected without creating or modifying tasks.
 - **Inputs**:
+
 ```
 todoist submit assignment
 deadlineplus exam /by Friday
@@ -473,7 +492,9 @@ unmarking 1
 list
 bye
 ```
+
 - **Expected Output**:
+
 ```
 This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
 ____________________________________________________________
@@ -488,6 +509,106 @@ This is not a valid input. Please try again. With the following: add, mark, unma
 ____________________________________________________________
 ____________________________________________________________
 This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+```
+
+---
+
+### TC-15: Delete Tasks and Preserve Ordering
+
+- **Aim**: Verify that deleting tasks at different positions removes only the selected task, shifts later tasks correctly, and updates the task count.
+- **Inputs**:
+
+```
+todo first task
+todo second task
+deadline third task /by Friday
+delete 2
+list
+delete 1
+list
+delete 1
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Noted. I've removed this task:
+[T][ ] second task
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] first task
+2.[D][ ] third task (by: Friday)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[T][ ] first task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[D][ ] third task (by: Friday)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[D][ ] third task (by: Friday)
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+```
+
+---
+
+### TC-16: Invalid Delete Arguments
+
+- **Aim**: Verify that missing, non-numeric, and out-of-range delete arguments do not change the task list.
+- **Inputs**:
+
+```
+delete
+delete abc
+delete 1
+todo keep this task
+delete 0
+delete 2
+delete 1
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Please enter something after 'delete'.
+____________________________________________________________
+____________________________________________________________
+Please enter a number after 'delete'.
+____________________________________________________________
+____________________________________________________________
+This is not a valid task number. Please enter a number from 1 to 0.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] keep this task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+This is not a valid task number. Please enter a number from 1 to 1.
+____________________________________________________________
+____________________________________________________________
+This is not a valid task number. Please enter a number from 1 to 1.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[T][ ] keep this task
+Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
