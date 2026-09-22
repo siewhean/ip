@@ -19,6 +19,16 @@ public class Deadline extends Task {
     }
 
     /**
+     * Returns the formatted string representation of the deadline task for file storage.
+     *
+     * @return Formatted deadline string for file storage.
+     */
+    @Override
+    public String toFileFormat() {
+        return "D | " + super.toFileFormat() + " | " + by;
+    }
+
+    /**
      * Returns a string representation of the deadline task.
      *
      * @return Formatted deadline task string.

@@ -1,5 +1,9 @@
 package foodielover;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,6 +17,9 @@ import foodielover.task.Todo;
  * Entry point for the Foodielover chatbot application.
  */
 public class Foodielover {
+    /** File path for persisting task data. */
+    private static final String FILE_PATH = "./data/foodielover.txt";
+
     /** Divider line used to format output messages. */
     private static final String DIVIDER_LINE = "____________________________________________________________";
 
@@ -33,6 +40,7 @@ public class Foodielover {
      * @param args Command-line arguments.
      */
     public static void main(String[] args) {
+        loadTasks();
         printGreeting();
         runCommandLoop();
         printGoodbye();
@@ -131,6 +139,7 @@ public class Foodielover {
                     "This is not a valid task number. Please enter a number from 1 to " + tasks.size() + ".");
         }
         tasks.get(taskIndex).markAsDone();
+        saveTasks();
         System.out.println("Nice! I've marked this task as done:");
         System.out.println("  " + tasks.get(taskIndex));
     }
@@ -148,6 +157,7 @@ public class Foodielover {
                     "This is not a valid task number. Please enter a number from 1 to " + tasks.size() + ".");
         }
         tasks.get(taskIndex).markAsUndone();
+        saveTasks();
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("  " + tasks.get(taskIndex));
     }
@@ -232,6 +242,7 @@ public class Foodielover {
      */
     private static void addTask(Task task) {
         tasks.add(task);
+        saveTasks();
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -250,8 +261,112 @@ public class Foodielover {
         }
 
         Task removedTask = tasks.remove(taskIndex);
+        saveTasks();
         System.out.println("Noted. I've removed this task:\n" + removedTask);
         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+    }
+
+    /**
+     * Loads tasks from the storage file into the task list.
+     * Skips corrupted lines or missing files gracefully.
+     */
+    private static void loadTasks() {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return;
+        }
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine().trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+                try {
+                    Task task = parseTaskLine(line);
+                    tasks.add(task);
+                } catch (FoodieloverException exception) {
+                    System.out.println("Warning: Skipping corrupted task entry in data file: " + line);
+                }
+            }
+        } catch (FileNotFoundException exception) {
+            // File does not exist yet; nothing to load.
+        }
+    }
+
+    /**
+     * Parses a single line from the storage file into a Task instance.
+     *
+     * @param line Raw line text from the storage file.
+     * @return Reconstructed Task instance.
+     * @throws FoodieloverException If the line format is malformed or invalid.
+     */
+    private static Task parseTaskLine(String line) throws FoodieloverException {
+        String[] parts = line.split("\\s*\\|\\s*", -1);
+        if (parts.length < 3) {
+            throw new FoodieloverException("Malformed line: insufficient fields.");
+        }
+
+        String type = parts[0].trim();
+        String isDoneStr = parts[1].trim();
+        String description = parts[2].trim();
+
+        if (!isDoneStr.equals("0") && !isDoneStr.equals("1")) {
+            throw new FoodieloverException("Malformed line: invalid completion status.");
+        }
+        if (description.isEmpty()) {
+            throw new FoodieloverException("Malformed line: empty task description.");
+        }
+
+        Task task;
+        if (type.equals("T")) {
+            task = new Todo(description);
+        } else if (type.equals("D")) {
+            if (parts.length < 4) {
+                throw new FoodieloverException("Malformed line: deadline missing due date.");
+            }
+            String by = parts[3].trim();
+            if (by.isEmpty()) {
+                throw new FoodieloverException("Malformed line: deadline has empty due date.");
+            }
+            task = new Deadline(description, by);
+        } else if (type.equals("E")) {
+            if (parts.length < 5) {
+                throw new FoodieloverException("Malformed line: event missing start or end time.");
+            }
+            String from = parts[3].trim();
+            String to = parts[4].trim();
+            if (from.isEmpty() || to.isEmpty()) {
+                throw new FoodieloverException("Malformed line: event has empty start or end time.");
+            }
+            task = new Event(description, from, to);
+        } else {
+            throw new FoodieloverException("Malformed line: unknown task type '" + type + "'.");
+        }
+
+        if (isDoneStr.equals("1")) {
+            task.markAsDone();
+        }
+        return task;
+    }
+
+    /**
+     * Saves the current tasks to the storage file.
+     */
+    private static void saveTasks() {
+        File file = new File(FILE_PATH);
+        File parentDir = file.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
+        try (FileWriter writer = new FileWriter(file)) {
+            for (Task task : tasks) {
+                writer.write(task.toFileFormat() + System.lineSeparator());
+            }
+        } catch (IOException exception) {
+            System.out.println("An error occurred while saving tasks: " + exception.getMessage());
+        }
     }
 
     /**

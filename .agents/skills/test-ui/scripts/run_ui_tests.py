@@ -16,6 +16,8 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..
 TEST_PLAN_PATH = os.path.join(PROJECT_ROOT, "test", "ui-test-plan.md")
 BIN_DIR = os.path.join(PROJECT_ROOT, "bin")
 SRC_DIR = os.path.join(PROJECT_ROOT, "src", "main", "java")
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+DATA_FILE = os.path.join(DATA_DIR, "foodielover.txt")
 MAIN_CLASS = "foodielover.Foodielover"
 
 
@@ -61,25 +63,34 @@ def parse_test_plan(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    test_case_pattern = re.compile(
-        r"###\s+([^\n]+)\n"
-        r"(?:.*?-\s*\*\*Aim\*\*:\s*([^\n]+))?"
-        r"(?:.*?-\s*\*\*Inputs?\*\*:\s*\n```[^\n]*\n(.*?)\n```)"
-        r"(?:.*?-\s*\*\*Expected Output\*\*:\s*\n```[^\n]*\n(.*?)\n```)",
-        re.DOTALL,
-    )
-
     test_cases = []
-    for match in test_case_pattern.finditer(content):
-        title = match.group(1).strip()
-        aim = match.group(2).strip() if match.group(2) else ""
-        raw_inputs = match.group(3)
-        expected_output = match.group(4)
+    # Split content by markdown level 3 headers
+    sections = content.split("\n### ")
+    for section in sections[1:]:
+        header_line = section.split("\n", 1)[0].strip()
+        title = header_line
+
+        aim_match = re.search(r"-\s*\*\*Aim\*\*:\s*([^\n]+)", section)
+        aim = aim_match.group(1).strip() if aim_match else ""
+
+        initial_match = re.search(r"-\s*\*\*Initial Data File\*\*:\s*\n```[^\n]*\n(.*?)\n```", section, re.DOTALL)
+        initial_data = initial_match.group(1) if initial_match else None
+
+        input_match = re.search(r"-\s*\*\*Inputs?\*\*:\s*\n```[^\n]*\n(.*?)\n```", section, re.DOTALL)
+        if not input_match:
+            continue
+        raw_inputs = input_match.group(1)
+
+        output_match = re.search(r"-\s*\*\*Expected Output\*\*:\s*\n```[^\n]*\n(.*?)\n```", section, re.DOTALL)
+        if not output_match:
+            continue
+        expected_output = output_match.group(1)
 
         inputs = [line.strip() for line in raw_inputs.strip().split("\n") if line.strip()]
         test_cases.append({
             "title": title,
             "aim": aim,
+            "initial_data": initial_data,
             "inputs": inputs,
             "expected_output": expected_output.strip(),
         })
@@ -168,7 +179,19 @@ def run_test(test_case):
     print(f"INPUTS: {', '.join(inputs)}")
     print(f"{'='*70}")
 
+    if os.path.exists(DATA_FILE):
+        os.remove(DATA_FILE)
+
+    if test_case.get("initial_data") is not None:
+        os.makedirs(DATA_DIR, exist_ok=True)
+        with open(DATA_FILE, "w", encoding="utf-8") as f:
+            f.write(test_case["initial_data"].strip() + "\n")
+
     actual_stdout, transcript = run_session(inputs)
+
+    if os.path.exists(DATA_FILE):
+        os.remove(DATA_FILE)
+
     matched, norm_actual, norm_expected = match_output(actual_stdout, expected_output)
 
     print("\n--- [CONSOLE SESSION RECORD] ---")

@@ -24,6 +24,16 @@ public class Event extends Task {
     }
 
     /**
+     * Returns the formatted string representation of the event task for file storage.
+     *
+     * @return Formatted event string for file storage.
+     */
+    @Override
+    public String toFileFormat() {
+        return "E | " + super.toFileFormat() + " | " + from + " | " + to;
+    }
+
+    /**
      * Returns a string representation of the event task.
      *
      * @return Formatted event task string.

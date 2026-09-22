@@ -53,6 +53,15 @@ public class Task {
     }
 
     /**
+     * Returns the formatted string representation of the task for file storage.
+     *
+     * @return Formatted string for file storage.
+     */
+    public String toFileFormat() {
+        return (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
      * Returns a string representation of the task with its status and description.
      *
      * @return Formatted task string.

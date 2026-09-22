@@ -868,3 +868,67 @@ Here are the tasks in your list:
 2.[D][ ] lab assignment (by: tomorrow night)
 3.[E][ ] workshop (from: noon to: midnight)
 ```
+
+---
+
+### TC-22: Automatic Task Loading from Storage on Startup
+
+- **Aim**: Verify that tasks saved in `./data/foodielover.txt` are automatically restored into the task list upon startup.
+- **Initial Data File**:
+```
+T | 1 | read book
+D | 0 | return book | Sunday
+E | 1 | project meeting | Mon 2pm | 4pm
+```
+- **Inputs**:
+```
+list
+bye
+```
+- **Expected Output**:
+```
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: Sunday)
+3.[E][X] project meeting (from: Mon 2pm to: 4pm)
+```
+
+---
+
+### TC-23: Corrupted Data File Recovery on Startup
+
+- **Aim**: Verify that corrupted entries, malformed delimiters, and invalid types in `./data/foodielover.txt` are skipped with warnings while valid tasks are preserved.
+- **Initial Data File**:
+```
+T | 1 | clean room
+CORRUPTED_ENTRY_WITHOUT_PIPES
+D | invalid_done | return book | tomorrow
+T | 0 | read newspaper
+E | 0 | workshop | only_one_time_field
+```
+- **Inputs**:
+```
+list
+bye
+```
+- **Expected Output**:
+```
+Warning: Skipping corrupted task entry in data file: CORRUPTED_ENTRY_WITHOUT_PIPES
+Warning: Skipping corrupted task entry in data file: D | invalid_done | return book | tomorrow
+Warning: Skipping corrupted task entry in data file: E | 0 | workshop | only_one_time_field
+____________________________________________________________
+ ______              _ _      _                            
+|  ____|            | (_)    | |                           
+| |__ ___   ___   __| |_  ___| | _____   _____ _ __        
+|  __/ _ \ / _ \ / _` | |/ _ \ |/ _ \ \ / / _ \ '__|       
+| | | (_) | (_) | (_| | |  __/ | (_) \ V /  __/ |          
+|_|  \___/ \___/ \__,_|_|\___|_|\___/ \_/ \___|_|          
+
+Hello! I'm Foodielover.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] clean room
+2.[T][ ] read newspaper
+```

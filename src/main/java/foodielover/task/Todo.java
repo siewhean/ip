@@ -14,6 +14,16 @@ public class Todo extends Task {
     }
 
     /**
+     * Returns the formatted string representation of the todo task for file storage.
+     *
+     * @return Formatted todo string for file storage.
+     */
+    @Override
+    public String toFileFormat() {
+        return "T | " + super.toFileFormat();
+    }
+
+    /**
      * Returns a string representation of the todo task.
      *
      * @return Formatted todo task string.
