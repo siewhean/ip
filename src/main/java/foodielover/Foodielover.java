@@ -7,38 +7,50 @@ import foodielover.task.TaskList;
 import foodielover.ui.Ui;
 
 /**
- * Entry point for the Foodielover chatbot application.
+ * Coordinates application lifecycle and executes user commands for the Foodielover chatbot.
  */
 public class Foodielover {
-    /** File path for persisting task data. */
-    private static final String FILE_PATH = "./data/foodielover.txt";
-
-    /** User interface handler for input and output interactions. */
-    private static final Ui ui = new Ui();
+    /** Default file path for storing task data. */
+    private static final String DEFAULT_FILE_PATH = "./data/foodielover.txt";
 
     /** Storage handler for persisting and loading task data. */
-    private static final Storage storage = new Storage(FILE_PATH);
+    private final Storage storage;
 
     /** In-memory task list. */
-    private static TaskList tasks = new TaskList();
+    private TaskList tasks;
+
+    /** User interface handler for input and output interactions. */
+    private final Ui ui;
 
     /**
-     * Runs the Foodielover application.
-     *
-     * @param args Command-line arguments.
+     * Constructs a Foodielover application instance with the default file path.
      */
-    public static void main(String[] args) {
-        loadTasks();
-        ui.showGreeting();
-        runCommandLoop();
+    public Foodielover() {
+        this(DEFAULT_FILE_PATH);
     }
 
     /**
-     * Reads and processes user commands until the exit command is received.
+     * Constructs a Foodielover application instance with the specified file path.
+     *
+     * @param filePath Relative or absolute path to the task data storage file.
      */
-    private static void runCommandLoop() {
-        boolean isExit = false;
+    public Foodielover(String filePath) {
+        this.ui = new Ui();
+        this.storage = new Storage(filePath);
+        try {
+            this.tasks = new TaskList(storage.load());
+        } catch (FoodieloverException exception) {
+            ui.showError(exception.getMessage());
+            this.tasks = new TaskList();
+        }
+    }
 
+    /**
+     * Runs the main execution loop of the Foodielover application.
+     */
+    public void run() {
+        ui.showWelcome();
+        boolean isExit = false;
         while (!isExit && ui.hasCommand()) {
             try {
                 String fullCommand = ui.readCommand();
@@ -55,14 +67,11 @@ public class Foodielover {
     }
 
     /**
-     * Loads tasks from the storage file into the task list.
+     * Main entry point for the Foodielover application.
+     *
+     * @param args Command-line arguments.
      */
-    private static void loadTasks() {
-        try {
-            tasks = new TaskList(storage.load());
-        } catch (FoodieloverException exception) {
-            ui.showError(exception.getMessage());
-            tasks = new TaskList();
-        }
+    public static void main(String[] args) {
+        new Foodielover(DEFAULT_FILE_PATH).run();
     }
 }
