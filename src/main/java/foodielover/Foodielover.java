@@ -12,6 +12,7 @@ import foodielover.task.Deadline;
 import foodielover.task.Event;
 import foodielover.task.Task;
 import foodielover.task.Todo;
+import foodielover.ui.Ui;
 
 /**
  * Entry point for the Foodielover chatbot application.
@@ -20,16 +21,8 @@ public class Foodielover {
     /** File path for persisting task data. */
     private static final String FILE_PATH = "./data/foodielover.txt";
 
-    /** Divider line used to format output messages. */
-    private static final String DIVIDER_LINE = "____________________________________________________________";
-
-    /** Banner graphic displayed upon startup. */
-    private static final String BANNER = " ______              _ _      _                            \n"
-            + "|  ____|            | (_)    | |                           \n"
-            + "| |__ ___   ___   __| |_  ___| | _____   _____ _ __        \n"
-            + "|  __/ _ \\ / _ \\ / _` | |/ _ \\ |/ _ \\ \\ / / _ \\ '__|       \n"
-            + "| | | (_) | (_) | (_| | |  __/ | (_) \\ V /  __/ |          \n"
-            + "|_|  \\___/ \\___/ \\__,_|_|\\___|_|\\___/ \\_/ \\___|_|          \n";
+    /** User interface handler for input and output interactions. */
+    private static final Ui ui = new Ui();
 
     /** In-memory storage for tasks. */
     private static final List<Task> tasks = new ArrayList<>();
@@ -41,40 +34,20 @@ public class Foodielover {
      */
     public static void main(String[] args) {
         loadTasks();
-        printGreeting();
+        ui.showGreeting();
         runCommandLoop();
-        printGoodbye();
-    }
-
-    /**
-     * Prints the startup banner and welcome greeting.
-     */
-    private static void printGreeting() {
-        System.out.println(DIVIDER_LINE);
-        System.out.println(BANNER);
-        System.out.println("Hello! I'm Foodielover.");
-        System.out.println("What can I do for you?");
-        System.out.println(DIVIDER_LINE);
-    }
-
-    /**
-     * Prints the exit farewell message.
-     */
-    private static void printGoodbye() {
-        System.out.println("Bye. Hope to see you again soon!");
-        System.out.println(DIVIDER_LINE);
+        ui.showGoodbye();
     }
 
     /**
      * Reads and processes user commands until the exit command is received.
      */
     private static void runCommandLoop() {
-        Scanner scanner = new Scanner(System.in);
         String input = "";
 
-        while (!input.equals("bye") && scanner.hasNextLine()) {
-            input = scanner.nextLine();
-            System.out.println(DIVIDER_LINE);
+        while (!input.equals("bye") && ui.hasCommand()) {
+            input = ui.readCommand();
+            ui.showLine();
 
             if (input.equals("bye")) {
                 break;
@@ -82,9 +55,9 @@ public class Foodielover {
             try {
                 handleCommand(input);
             } catch (FoodieloverException exception) {
-                System.out.println(exception.getMessage());
+                ui.showError(exception.getMessage());
             }
-            System.out.println(DIVIDER_LINE);
+            ui.showLine();
         }
     }
 
@@ -120,10 +93,7 @@ public class Foodielover {
      * Prints all tasks currently stored in the task list.
      */
     private static void listTasks() {
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
-        }
+        ui.showTaskList(tasks);
     }
 
     /**
@@ -140,8 +110,7 @@ public class Foodielover {
         }
         tasks.get(taskIndex).markAsDone();
         saveTasks();
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + tasks.get(taskIndex));
+        ui.showTaskMarked(tasks.get(taskIndex));
     }
 
     /**
@@ -158,8 +127,7 @@ public class Foodielover {
         }
         tasks.get(taskIndex).markAsUndone();
         saveTasks();
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + tasks.get(taskIndex));
+        ui.showTaskUnmarked(tasks.get(taskIndex));
     }
 
     /**
@@ -243,9 +211,7 @@ public class Foodielover {
     private static void addTask(Task task) {
         tasks.add(task);
         saveTasks();
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+        ui.showTaskAdded(task, tasks.size());
     }
 
     /**
@@ -262,8 +228,7 @@ public class Foodielover {
 
         Task removedTask = tasks.remove(taskIndex);
         saveTasks();
-        System.out.println("Noted. I've removed this task:\n" + removedTask);
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+        ui.showTaskRemoved(removedTask, tasks.size());
     }
 
     /**
@@ -286,7 +251,7 @@ public class Foodielover {
                     Task task = parseTaskLine(line);
                     tasks.add(task);
                 } catch (FoodieloverException exception) {
-                    System.out.println("Warning: Skipping corrupted task entry in data file: " + line);
+                    ui.showCorruptedLineWarning(line);
                 }
             }
         } catch (FileNotFoundException exception) {
@@ -365,7 +330,7 @@ public class Foodielover {
                 writer.write(task.toFileFormat() + System.lineSeparator());
             }
         } catch (IOException exception) {
-            System.out.println("An error occurred while saving tasks: " + exception.getMessage());
+            ui.showSaveError(exception.getMessage());
         }
     }
 
