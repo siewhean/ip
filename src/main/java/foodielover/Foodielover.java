@@ -1,13 +1,10 @@
 package foodielover;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
+import foodielover.storage.Storage;
 import foodielover.task.Deadline;
 import foodielover.task.Event;
 import foodielover.task.Task;
@@ -23,6 +20,9 @@ public class Foodielover {
 
     /** User interface handler for input and output interactions. */
     private static final Ui ui = new Ui();
+
+    /** Storage handler for persisting and loading task data. */
+    private static final Storage storage = new Storage(FILE_PATH);
 
     /** In-memory storage for tasks. */
     private static final List<Task> tasks = new ArrayList<>();
@@ -233,102 +233,21 @@ public class Foodielover {
 
     /**
      * Loads tasks from the storage file into the task list.
-     * Skips corrupted lines or missing files gracefully.
      */
     private static void loadTasks() {
-        File file = new File(FILE_PATH);
-        if (!file.exists()) {
-            return;
+        try {
+            tasks.addAll(storage.load());
+        } catch (FoodieloverException exception) {
+            ui.showError(exception.getMessage());
         }
-
-        try (Scanner fileScanner = new Scanner(file)) {
-            while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine().trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                try {
-                    Task task = parseTaskLine(line);
-                    tasks.add(task);
-                } catch (FoodieloverException exception) {
-                    ui.showCorruptedLineWarning(line);
-                }
-            }
-        } catch (FileNotFoundException exception) {
-            // File does not exist yet; nothing to load.
-        }
-    }
-
-    /**
-     * Parses a single line from the storage file into a Task instance.
-     *
-     * @param line Raw line text from the storage file.
-     * @return Reconstructed Task instance.
-     * @throws FoodieloverException If the line format is malformed or invalid.
-     */
-    private static Task parseTaskLine(String line) throws FoodieloverException {
-        String[] parts = line.split("\\s*\\|\\s*", -1);
-        if (parts.length < 3) {
-            throw new FoodieloverException("Malformed line: insufficient fields.");
-        }
-
-        String type = parts[0].trim();
-        String isDoneStr = parts[1].trim();
-        String description = parts[2].trim();
-
-        if (!isDoneStr.equals("0") && !isDoneStr.equals("1")) {
-            throw new FoodieloverException("Malformed line: invalid completion status.");
-        }
-        if (description.isEmpty()) {
-            throw new FoodieloverException("Malformed line: empty task description.");
-        }
-
-        Task task;
-        if (type.equals("T")) {
-            task = new Todo(description);
-        } else if (type.equals("D")) {
-            if (parts.length < 4) {
-                throw new FoodieloverException("Malformed line: deadline missing due date.");
-            }
-            String by = parts[3].trim();
-            if (by.isEmpty()) {
-                throw new FoodieloverException("Malformed line: deadline has empty due date.");
-            }
-            task = new Deadline(description, by);
-        } else if (type.equals("E")) {
-            if (parts.length < 5) {
-                throw new FoodieloverException("Malformed line: event missing start or end time.");
-            }
-            String from = parts[3].trim();
-            String to = parts[4].trim();
-            if (from.isEmpty() || to.isEmpty()) {
-                throw new FoodieloverException("Malformed line: event has empty start or end time.");
-            }
-            task = new Event(description, from, to);
-        } else {
-            throw new FoodieloverException("Malformed line: unknown task type '" + type + "'.");
-        }
-
-        if (isDoneStr.equals("1")) {
-            task.markAsDone();
-        }
-        return task;
     }
 
     /**
      * Saves the current tasks to the storage file.
      */
     private static void saveTasks() {
-        File file = new File(FILE_PATH);
-        File parentDir = file.getParentFile();
-        if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs();
-        }
-
-        try (FileWriter writer = new FileWriter(file)) {
-            for (Task task : tasks) {
-                writer.write(task.toFileFormat() + System.lineSeparator());
-            }
+        try {
+            storage.save(tasks);
         } catch (IOException exception) {
             ui.showSaveError(exception.getMessage());
         }
