@@ -12,6 +12,7 @@ import foodielover.FoodieloverException;
 import foodielover.task.Deadline;
 import foodielover.task.Event;
 import foodielover.task.Task;
+import foodielover.task.TaskList;
 import foodielover.task.Todo;
 
 /**
@@ -81,6 +82,16 @@ public class Storage {
                 writer.write(task.toFileFormat() + System.lineSeparator());
             }
         }
+    }
+
+    /**
+     * Saves the tasks in the provided TaskList to the storage file.
+     *
+     * @param tasks TaskList instance containing tasks to write to disk.
+     * @throws IOException If writing to the file fails.
+     */
+    public void save(TaskList tasks) throws IOException {
+        save(tasks.getAll());
     }
 
     /**

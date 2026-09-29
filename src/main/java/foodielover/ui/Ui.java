@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import foodielover.task.Task;
+import foodielover.task.TaskList;
 
 /**
  * Handles interactions with the user such as displaying messages and reading inputs.
@@ -111,6 +112,15 @@ public class Ui {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + "." + tasks.get(i));
         }
+    }
+
+    /**
+     * Prints all tasks currently stored in the task list.
+     *
+     * @param tasks TaskList instance containing tasks to display.
+     */
+    public void showTaskList(TaskList tasks) {
+        showTaskList(tasks.getAll());
     }
 
     /**

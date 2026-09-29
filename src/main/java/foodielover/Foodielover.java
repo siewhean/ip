@@ -1,13 +1,12 @@
 package foodielover;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import foodielover.storage.Storage;
 import foodielover.task.Deadline;
 import foodielover.task.Event;
 import foodielover.task.Task;
+import foodielover.task.TaskList;
 import foodielover.task.Todo;
 import foodielover.ui.Ui;
 
@@ -24,8 +23,8 @@ public class Foodielover {
     /** Storage handler for persisting and loading task data. */
     private static final Storage storage = new Storage(FILE_PATH);
 
-    /** In-memory storage for tasks. */
-    private static final List<Task> tasks = new ArrayList<>();
+    /** In-memory task list. */
+    private static TaskList tasks = new TaskList();
 
     /**
      * Runs the Foodielover application.
@@ -236,9 +235,10 @@ public class Foodielover {
      */
     private static void loadTasks() {
         try {
-            tasks.addAll(storage.load());
+            tasks = new TaskList(storage.load());
         } catch (FoodieloverException exception) {
             ui.showError(exception.getMessage());
+            tasks = new TaskList();
         }
     }
 
