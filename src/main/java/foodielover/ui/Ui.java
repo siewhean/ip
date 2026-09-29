@@ -68,11 +68,17 @@ public class Ui {
     }
 
     /**
+     * Displays the welcome greeting and banner to the user.
+     */
+    public void showWelcome() {
+        showGreeting();
+    }
+
+    /**
      * Prints the exit farewell message.
      */
     public void showGoodbye() {
         System.out.println("Bye. Hope to see you again soon!");
-        showLine();
     }
 
     /**
