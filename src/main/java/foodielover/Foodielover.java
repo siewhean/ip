@@ -67,7 +67,7 @@ public class Foodielover {
     }
 
     /**
-     * Main entry point for the Foodielover application.
+     * Starts the Foodielover application.
      *
      * @param args Command-line arguments.
      */

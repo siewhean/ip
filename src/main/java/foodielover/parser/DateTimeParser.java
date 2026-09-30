@@ -39,6 +39,12 @@ public class DateTimeParser {
     };
 
     /**
+     * Prevents instantiation of this utility class.
+     */
+    private DateTimeParser() {
+    }
+
+    /**
      * Parses the input string into a LocalDateTime if it matches a supported date-time format.
      *
      * @param text Raw date-time string.

@@ -9,6 +9,12 @@ import foodielover.ui.Ui;
  */
 public class ListCommand extends Command {
     /**
+     * Constructs a ListCommand.
+     */
+    public ListCommand() {
+    }
+
+    /**
      * Executes the list command by displaying all stored tasks.
      *
      * @param tasks Current task list.

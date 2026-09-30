@@ -21,6 +21,12 @@ import foodielover.task.Todo;
  */
 public class Parser {
     /**
+     * Prevents instantiation of this utility class.
+     */
+    private Parser() {
+    }
+
+    /**
      * Parses the user's raw input string and returns the corresponding Command.
      *
      * @param input Raw command line entered by the user.

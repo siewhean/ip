@@ -9,6 +9,12 @@ import foodielover.ui.Ui;
  */
 public class ExitCommand extends Command {
     /**
+     * Constructs an ExitCommand.
+     */
+    public ExitCommand() {
+    }
+
+    /**
      * Executes the exit command by displaying the goodbye message.
      *
      * @param tasks Current task list.
