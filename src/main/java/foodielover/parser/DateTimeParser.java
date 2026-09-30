@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Locale;
 
 /**
@@ -18,30 +19,47 @@ public class DateTimeParser {
     private static final DateTimeFormatter DATE_TIME_OUTPUT_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma", Locale.ENGLISH);
 
+    /** Regex matching formatted calendar date strings with optional time component. */
+    private static final String DATE_LIKE_REGEX =
+            "^(\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}|\\d{1,2}[-/]\\d{1,2}[-/]\\d{4})(\\s+\\d{1,2}:?\\d{2})?$";
+
     /** Supported input date-time formatters. */
     private static final DateTimeFormatter[] DATE_TIME_INPUT_FORMATTERS = new DateTimeFormatter[] {
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"),
-            DateTimeFormatter.ofPattern("d/M/yyyy HHmm"),
-            DateTimeFormatter.ofPattern("d/M/yyyy HH:mm"),
-            DateTimeFormatter.ofPattern("d-M-yyyy HHmm"),
-            DateTimeFormatter.ofPattern("d-M-yyyy HH:mm"),
-            DateTimeFormatter.ofPattern("yyyy/M/d HHmm"),
-            DateTimeFormatter.ofPattern("yyyy/M/d HH:mm")
+            DateTimeFormatter.ofPattern("uuuu-M-d HHmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("uuuu-M-d HH:mm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d/M/uuuu HHmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d/M/uuuu HH:mm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d-M-uuuu HHmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d-M-uuuu HH:mm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("uuuu/M/d HHmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("uuuu/M/d HH:mm").withResolverStyle(ResolverStyle.STRICT)
     };
 
     /** Supported input date formatters. */
     private static final DateTimeFormatter[] DATE_INPUT_FORMATTERS = new DateTimeFormatter[] {
-            DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-            DateTimeFormatter.ofPattern("d/M/yyyy"),
-            DateTimeFormatter.ofPattern("d-M-yyyy"),
-            DateTimeFormatter.ofPattern("yyyy/M/d")
+            DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d-M-uuuu").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("uuuu/M/d").withResolverStyle(ResolverStyle.STRICT)
     };
 
     /**
      * Prevents instantiation of this utility class.
      */
     private DateTimeParser() {
+    }
+
+    /**
+     * Checks if the text resembles a formatted date or date-time string.
+     *
+     * @param text String to inspect.
+     * @return True if the string looks like a formatted date, false otherwise.
+     */
+    public static boolean isDateLike(String text) {
+        if (text == null) {
+            return false;
+        }
+        return text.trim().matches(DATE_LIKE_REGEX);
     }
 
     /**
