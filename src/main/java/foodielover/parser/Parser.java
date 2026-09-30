@@ -8,6 +8,7 @@ import foodielover.command.Command;
 import foodielover.command.DateFilterCommand;
 import foodielover.command.DeleteCommand;
 import foodielover.command.ExitCommand;
+import foodielover.command.FindCommand;
 import foodielover.command.ListCommand;
 import foodielover.command.MarkCommand;
 import foodielover.command.UnmarkCommand;
@@ -46,6 +47,8 @@ public class Parser {
         } else if (input.equals("delete") || input.startsWith("delete ")) {
             int taskIndex = parseTaskIndex(input, "delete");
             return new DeleteCommand(taskIndex);
+        } else if (input.equals("find") || input.startsWith("find ")) {
+            return parseFind(input);
         } else if (input.equals("date") || input.startsWith("date ")
                 || input.equals("on") || input.startsWith("on ")) {
             return parseDateFilter(input);
@@ -156,5 +159,20 @@ public class Parser {
                     "Please enter a valid date in the format yyyy-mm-dd or d/M/yyyy (e.g., 2019-10-15 or 2/12/2019).");
         }
         return new DateFilterCommand(date);
+    }
+
+    /**
+     * Parses a find command string into a FindCommand.
+     *
+     * @param input Command string containing the search keyword.
+     * @return FindCommand with the parsed keyword.
+     * @throws FoodieloverException If keyword is missing.
+     */
+    private static Command parseFind(String input) throws FoodieloverException {
+        String keyword = input.substring(4).trim();
+        if (keyword.isEmpty()) {
+            throw new FoodieloverException("Please enter a keyword after 'find'.");
+        }
+        return new FindCommand(keyword);
     }
 }

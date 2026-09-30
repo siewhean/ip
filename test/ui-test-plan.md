@@ -1026,3 +1026,71 @@ ____________________________________________________________
 ____________________________________________________________
 Please enter a valid date in the format yyyy-mm-dd or d/M/yyyy (e.g., 2019-10-15 or 2/12/2019).
 ```
+
+---
+
+### TC-26: Find Tasks by Keyword
+
+- **Aim**: Verify that `find` searches for tasks containing a keyword in their description, displays matching tasks with 1-based indexing, handles case-insensitivity, reports when no tasks match, and validates missing keyword arguments.
+- **Inputs**:
+
+```
+todo read book
+deadline return book /by June 6th
+event project meeting /from 2026-10-15 /to 2026-10-16
+mark 1
+mark 2
+find book
+find BOOK
+find meeting
+find non-existent
+find
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] project meeting (from: Oct 15 2026 to: Oct 16 2026)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[E][ ] project meeting (from: Oct 15 2026 to: Oct 16 2026)
+____________________________________________________________
+____________________________________________________________
+No matching tasks found in your list.
+____________________________________________________________
+____________________________________________________________
+Please enter a keyword after 'find'.
+```
+
