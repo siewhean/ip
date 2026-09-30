@@ -60,7 +60,7 @@ bye
 ```
 Got it. I've added this task:
   [T][ ] borrow book
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ```
 
 ---
@@ -80,7 +80,7 @@ bye
 ```
 Got it. I've added this task:
   [D][ ] return book (by: Sunday)
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ```
 
 ---
@@ -100,7 +100,7 @@ bye
 ```
 Got it. I've added this task:
   [E][ ] project meeting (from: Mon 2pm to: 4pm)
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ```
 
 ---
@@ -228,7 +228,7 @@ ____________________________________________________________
 Please enter a number after 'mark'.
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid task number. Please enter a number from 1 to 0.
+Your task list is empty. Please add a task before unmarking one.
 ____________________________________________________________
 ____________________________________________________________
 Please enter a description after 'todo'.
@@ -265,7 +265,7 @@ bye
 - **Expected Output**:
 
 ```
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+This is not a valid input. Please try again with one of the following commands: todo, deadline, event, list, mark, unmark, delete, find, date, on, bye
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -273,7 +273,7 @@ ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
   [T][ ] submit assignment
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
@@ -373,7 +373,7 @@ ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
   [D][ ] submit quiz (by: tomorrow)
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -411,7 +411,7 @@ bye
 - **Expected Output**:
 
 ```
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+This is not a valid input. Please try again with one of the following commands: todo, deadline, event, list, mark, unmark, delete, find, date, on, bye
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -419,7 +419,7 @@ ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
   [T][ ] read book
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 This is not a valid task number. Please enter a number from 1 to 1.
@@ -496,19 +496,19 @@ bye
 - **Expected Output**:
 
 ```
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+This is not a valid input. Please try again with one of the following commands: todo, deadline, event, list, mark, unmark, delete, find, date, on, bye
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+This is not a valid input. Please try again with one of the following commands: todo, deadline, event, list, mark, unmark, delete, find, date, on, bye
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+This is not a valid input. Please try again with one of the following commands: todo, deadline, event, list, mark, unmark, delete, find, date, on, bye
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+This is not a valid input. Please try again with one of the following commands: todo, deadline, event, list, mark, unmark, delete, find, date, on, bye
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid input. Please try again. With the following: add, mark, unmark, todo, deadline, event, list
+This is not a valid input. Please try again with one of the following commands: todo, deadline, event, list, mark, unmark, delete, find, date, on, bye
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -549,7 +549,7 @@ ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
 [T][ ] first task
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -592,12 +592,12 @@ ____________________________________________________________
 Please enter a number after 'delete'.
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid task number. Please enter a number from 1 to 0.
+Your task list is empty. Please add a task before removing one.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
   [T][ ] keep this task
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 This is not a valid task number. Please enter a number from 1 to 1.
@@ -637,7 +637,7 @@ bye
 ```
 Got it. I've added this task:
   [T][ ] write report
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
@@ -692,7 +692,7 @@ bye
 ```
 Got it. I've added this task:
   [T][ ] task one
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -712,7 +712,7 @@ ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
 [T][ ] task one
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
@@ -720,13 +720,13 @@ Noted. I've removed this task:
 Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid task number. Please enter a number from 1 to 0.
+Your task list is empty. Please add a task before removing one.
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid task number. Please enter a number from 1 to 0.
+Your task list is empty. Please add a task before marking one.
 ____________________________________________________________
 ____________________________________________________________
-This is not a valid task number. Please enter a number from 1 to 0.
+Your task list is empty. Please add a task before unmarking one.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -734,7 +734,7 @@ ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
   [T][ ] fresh task
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -761,7 +761,7 @@ bye
 ```
 Got it. I've added this task:
   [T][ ] CS2113 Tutorial #4 (read pages 12-30) & submit PR!
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -804,7 +804,7 @@ bye
 ```
 Got it. I've added this task:
   [T][ ] sample task
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
@@ -850,7 +850,7 @@ bye
 ```
 Got it. I've added this task:
   [T][ ] padded description
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -953,7 +953,7 @@ bye
 ```
 Got it. I've added this task:
   [D][ ] return book (by: Dec 02 2019, 6:00PM)
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -996,7 +996,7 @@ bye
 ```
 Got it. I've added this task:
   [D][ ] return book (by: Oct 15 2019)
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -1053,7 +1053,7 @@ bye
 ```
 Got it. I've added this task:
   [T][ ] read book
-Now you have 1 tasks in the list.
+Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -1093,4 +1093,68 @@ ____________________________________________________________
 ____________________________________________________________
 Please enter a keyword after 'find'.
 ```
+
+---
+
+### TC-27: Pipe Character Sanitization and Validation
+
+- **Aim**: Verify that tasks containing the pipe character ('|') are rejected with a clear message to prevent storage file corruption.
+- **Inputs**:
+
+```
+todo read | book
+deadline submit | report /by 2026-10-15
+deadline submit report /by 2026-10-15 | tonight
+event meeting /from 2026-10-15 /to 2026-10-16 | party
+bye
+```
+
+- **Expected Output**:
+
+```
+Task description cannot contain the pipe character ('|').
+____________________________________________________________
+____________________________________________________________
+Task description or deadline cannot contain the pipe character ('|').
+____________________________________________________________
+____________________________________________________________
+Task description or deadline cannot contain the pipe character ('|').
+____________________________________________________________
+____________________________________________________________
+Task description or event dates cannot contain the pipe character ('|').
+```
+
+---
+
+### TC-28: Impossible Date Handling and Event Chronology Validation
+
+- **Aim**: Verify that calendar dates like Feb 30 are rejected instead of silently shifted, events cannot end before start, and whitespace/case are tolerated.
+- **Inputs**:
+
+```
+deadline return book /by 2019-02-30
+event party /from 2019-12-02 1800 /to 2019-12-01 1800
+  TODO  write report  
+LIST
+bye
+```
+
+- **Expected Output**:
+
+```
+Invalid date or time: '2019-02-30'. Please provide a valid calendar date.
+____________________________________________________________
+____________________________________________________________
+The event end time cannot be earlier than its start time.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] write report
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] write report
+```
+
 

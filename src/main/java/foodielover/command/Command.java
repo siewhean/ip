@@ -10,6 +10,12 @@ import foodielover.ui.Ui;
  */
 public abstract class Command {
     /**
+     * Constructs a Command instance.
+     */
+    protected Command() {
+    }
+
+    /**
      * Executes the command using the provided task list, user interface, and storage.
      *
      * @param tasks Current task list.

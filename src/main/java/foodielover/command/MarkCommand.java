@@ -34,6 +34,10 @@ public class MarkCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws FoodieloverException {
+        if (tasks.isEmpty()) {
+            throw new FoodieloverException(
+                    "Your task list is empty. Please add a task before marking one.");
+        }
         if (taskIndex < 0 || taskIndex >= tasks.size()) {
             throw new FoodieloverException(
                     "This is not a valid task number. Please enter a number from 1 to " + tasks.size() + ".");

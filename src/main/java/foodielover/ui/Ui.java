@@ -174,7 +174,7 @@ public class Ui {
     public void showTaskAdded(Task task, int totalTasks) {
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
-        System.out.println("Now you have " + totalTasks + " tasks in the list.");
+        System.out.println("Now you have " + totalTasks + (totalTasks == 1 ? " task" : " tasks") + " in the list.");
     }
 
     /**
@@ -185,7 +185,7 @@ public class Ui {
      */
     public void showTaskRemoved(Task task, int totalTasks) {
         System.out.println("Noted. I've removed this task:\n" + task);
-        System.out.println("Now you have " + totalTasks + " tasks in the list.");
+        System.out.println("Now you have " + totalTasks + (totalTasks == 1 ? " task" : " tasks") + " in the list.");
     }
 
     /**

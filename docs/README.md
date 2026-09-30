@@ -18,14 +18,14 @@
   - [Filtering tasks by date: `date` / `on`](#filtering-tasks-by-date-date--on)
   - [Deleting a task: `delete`](#deleting-a-task-delete)
   - [Exiting the program: `bye`](#exiting-the-program-bye)
-  - [Automatic Data Persistence](#automatic-data-persistence)
+  - [Automatic Data Persistence & Backup](#automatic-data-persistence--backup)
 - [Command Summary](#command-summary)
 
 ---
 
 ## Quick Start
 
-1. Ensure that you have **Java 25** (or Java 17+) installed on your computer.
+1. Ensure that you have **Java 25** installed on your computer.
 2. Download the latest `foodielover.jar` from the [Releases](https://github.com/siewhean/ip/releases) page.
 3. Place the JAR file in an empty folder you wish to use as Foodielover's home directory.
 4. Open a terminal, navigate (`cd`) to that directory, and run:
@@ -55,6 +55,8 @@
 > **Notes on Command Syntax:**
 > - Words in `UPPER_CASE` represent parameters to be supplied by the user (e.g., in `todo DESCRIPTION`, `DESCRIPTION` is the task description).
 > - Parameters must follow the specified flags (e.g., `/by`, `/from`, `/to`).
+> - Commands are case-insensitive and tolerate leading/trailing whitespace (e.g., `LIST`, `list `, and `  list` all work).
+> - The pipe character (`|`) is reserved as an internal storage separator and cannot be included in descriptions, dates, or times.
 
 ### Adding a ToDo task: `todo`
 
@@ -69,14 +71,14 @@ Adds a simple task without any deadline or specific time constraints.
   ```text
   Got it. I've added this task:
     [T][ ] buy baking ingredients
-  Now you have 1 tasks in the list.
+  Now you have 1 task in the list.
   ```
 
 ### Adding a Deadline task: `deadline`
 
 Adds a task that must be completed before a specified due date or time using the `/by` delimiter.
 
-Foodielover intelligently recognizes formatted dates and times (such as `yyyy-MM-dd` or `d/M/yyyy HHmm`), pretty-printing them upon display, while still accepting natural text (such as `June 6th` or `tonight`).
+Foodielover recognizes standard date formats (such as `yyyy-MM-dd`, `d/M/yyyy`, `d-M-yyyy`, or `yyyy/M/d` with optional 24-hour time like `HHmm` or `HH:mm`), pretty-printing them upon display (e.g. `Oct 15 2026` or `Dec 02 2026, 6:00PM`). Natural phrases like `June 6th` or `tonight` are also accepted. Calendar dates are strictly validated, preventing impossible inputs like `2019-02-30`.
 
 - **Format:** `deadline DESCRIPTION /by DUE_DATE_OR_TIME`
 - **Examples:**
@@ -99,7 +101,7 @@ Foodielover intelligently recognizes formatted dates and times (such as `yyyy-MM
 
 ### Adding an Event task: `event`
 
-Adds a task that occurs within a specific time period using the `/from` and `/to` delimiters.
+Adds a task that occurs within a specific time period using the `/from` and `/to` delimiters. When dates/times are provided for both, Foodielover checks that the end time is not earlier than the start time.
 
 - **Format:** `event DESCRIPTION /from START_TIME /to END_TIME`
 - **Examples:**
@@ -174,7 +176,7 @@ Searches task descriptions case-insensitively for the given keyword and displays
 Finds all deadlines and events that occur on or fall across a specific date. Both `date` and `on` keywords are supported.
 
 - **Format:** `date DATE` or `on DATE`
-  - Accepts dates in `yyyy-MM-dd` (e.g., `2026-10-15`) or `d/M/yyyy` (e.g., `15/10/2026`) formats.
+  - Accepts dates in `yyyy-MM-dd`, `d/M/yyyy`, `d-M-yyyy`, or `yyyy/M/d` formats.
 - **Example:** `date 2026-10-15`
 - **Expected Output:**
   ```text
@@ -198,7 +200,7 @@ Removes a task from your list by its 1-based index number.
 
 ### Exiting the program: `bye`
 
-Exits Foodielover.
+Exits Foodielover cleanly.
 
 - **Format:** `bye`
 - **Expected Output:**
@@ -206,11 +208,11 @@ Exits Foodielover.
   Bye. Hope to see you again soon!
   ```
 
-### Automatic Data Persistence
+### Automatic Data Persistence & Backup
 
 - Foodielover automatically saves all additions, deletions, and status changes to disk at `./data/foodielover.txt`.
-- There is no need to manually save before exiting.
-- The next time you launch Foodielover, your tasks are reloaded automatically. If any individual line in the data file is corrupted, Foodielover logs a non-fatal warning and safely loads the remaining tasks.
+- Before overwriting existing data, Foodielover creates a safe backup copy at `./data/foodielover.txt.bak`.
+- When starting up, your tasks are loaded automatically. If any line is damaged or malformed, Foodielover issues a warning, skips the damaged entry, and safely loads the rest.
 
 ---
 
