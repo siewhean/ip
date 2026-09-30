@@ -1,5 +1,6 @@
 package foodielover.task;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,5 +82,21 @@ public class TaskList {
      */
     public List<Task> getAll() {
         return Collections.unmodifiableList(tasks);
+    }
+
+    /**
+     * Returns a list of tasks that occur on or are due on the specified date.
+     *
+     * @param targetDate Date to filter tasks by.
+     * @return List of tasks occurring on the target date.
+     */
+    public List<Task> getTasksOnDate(LocalDate targetDate) {
+        List<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.isOnDate(targetDate)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
     }
 }

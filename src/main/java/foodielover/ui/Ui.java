@@ -1,8 +1,10 @@
 package foodielover.ui;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import foodielover.parser.DateTimeParser;
 import foodielover.task.Task;
 import foodielover.task.TaskList;
 
@@ -127,6 +129,24 @@ public class Ui {
      */
     public void showTaskList(TaskList tasks) {
         showTaskList(tasks.getAll());
+    }
+
+    /**
+     * Prints all tasks occurring on the specified date.
+     *
+     * @param matchingTasks List of tasks matching the date query.
+     * @param date Date being queried.
+     */
+    public void showTasksOnDate(List<Task> matchingTasks, LocalDate date) {
+        String formattedDate = DateTimeParser.formatDate(date);
+        if (matchingTasks.isEmpty()) {
+            System.out.println("No tasks found occurring on " + formattedDate + ".");
+            return;
+        }
+        System.out.println("Here are the tasks occurring on " + formattedDate + ":");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            System.out.println((i + 1) + "." + matchingTasks.get(i));
+        }
     }
 
     /**

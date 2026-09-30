@@ -765,7 +765,7 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] project v1.0 (by: 2026-10-15 23:59)
+  [D][ ] project v1.0 (by: Oct 15 2026, 11:59PM)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -776,7 +776,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] CS2113 Tutorial #4 (read pages 12-30) & submit PR!
-2.[D][ ] project v1.0 (by: 2026-10-15 23:59)
+2.[D][ ] project v1.0 (by: Oct 15 2026, 11:59PM)
 3.[E][ ] Tech Symposium (Hall 2) (from: 10:00 AM to: 4:30 PM)
 ```
 
@@ -931,4 +931,98 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] clean room
 2.[T][ ] read newspaper
+```
+
+---
+
+### TC-24: Date and Time Parsing for Deadlines and Events
+
+- **Aim**: Verify that deadlines and events accept date and time formats (`yyyy-MM-dd`, `d/M/yyyy HHmm`), format them for display (`MMM dd yyyy`, `MMM dd yyyy, h:mma`), and preserve raw text for non-date inputs.
+- **Inputs**:
+
+```
+deadline return book /by 2/12/2019 1800
+deadline submit report /by 2019-10-15
+event career fair /from 2019-10-15 0900 /to 2019-10-15 1700
+list
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [D][ ] return book (by: Dec 02 2019, 6:00PM)
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] submit report (by: Oct 15 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] career fair (from: Oct 15 2019, 9:00AM to: Oct 15 2019, 5:00PM)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[D][ ] return book (by: Dec 02 2019, 6:00PM)
+2.[D][ ] submit report (by: Oct 15 2019)
+3.[E][ ] career fair (from: Oct 15 2019, 9:00AM to: Oct 15 2019, 5:00PM)
+```
+
+---
+
+### TC-25: Query Tasks Occurring on a Specific Date
+
+- **Aim**: Verify that `date` and `on` commands filter tasks occurring on a specified date, print an informative message when no tasks match, and validate date inputs.
+- **Inputs**:
+
+```
+deadline return book /by 2019-10-15
+deadline assignment 1 /by 2/12/2019 1800
+event orientation /from 2019-10-14 /to 2019-10-16
+date 2019-10-15
+on 2/12/2019
+date 2025-01-01
+date
+date not-a-date
+bye
+```
+
+- **Expected Output**:
+
+```
+Got it. I've added this task:
+  [D][ ] return book (by: Oct 15 2019)
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] assignment 1 (by: Dec 02 2019, 6:00PM)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] orientation (from: Oct 14 2019 to: Oct 16 2019)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks occurring on Oct 15 2019:
+1.[D][ ] return book (by: Oct 15 2019)
+2.[E][ ] orientation (from: Oct 14 2019 to: Oct 16 2019)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks occurring on Dec 02 2019:
+1.[D][ ] assignment 1 (by: Dec 02 2019, 6:00PM)
+____________________________________________________________
+____________________________________________________________
+No tasks found occurring on Jan 01 2025.
+____________________________________________________________
+____________________________________________________________
+Please enter a date after 'date' (e.g., 2019-10-15 or 2/12/2019).
+____________________________________________________________
+____________________________________________________________
+Please enter a valid date in the format yyyy-mm-dd or d/M/yyyy (e.g., 2019-10-15 or 2/12/2019).
 ```

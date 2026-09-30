@@ -1,5 +1,7 @@
 package foodielover.task;
 
+import java.time.LocalDate;
+
 /**
  * Represents a task with a description and a completion status.
  */
@@ -59,6 +61,17 @@ public class Task {
      */
     public String toFileFormat() {
         return (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
+     * Checks if this task occurs on or is due on the specified date.
+     * Subclasses with date information override this method.
+     *
+     * @param targetDate Date to compare against.
+     * @return True if the task occurs on the specified date, false otherwise.
+     */
+    public boolean isOnDate(LocalDate targetDate) {
+        return false;
     }
 
     /**

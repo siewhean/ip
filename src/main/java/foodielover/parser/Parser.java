@@ -1,8 +1,11 @@
 package foodielover.parser;
 
+import java.time.LocalDate;
+
 import foodielover.FoodieloverException;
 import foodielover.command.AddCommand;
 import foodielover.command.Command;
+import foodielover.command.DateFilterCommand;
 import foodielover.command.DeleteCommand;
 import foodielover.command.ExitCommand;
 import foodielover.command.ListCommand;
@@ -43,6 +46,9 @@ public class Parser {
         } else if (input.equals("delete") || input.startsWith("delete ")) {
             int taskIndex = parseTaskIndex(input, "delete");
             return new DeleteCommand(taskIndex);
+        } else if (input.equals("date") || input.startsWith("date ")
+                || input.equals("on") || input.startsWith("on ")) {
+            return parseDateFilter(input);
         } else {
             throw new FoodieloverException(
                     "This is not a valid input. Please try again. "
@@ -128,5 +134,27 @@ public class Parser {
                     "Please provide an event description and values after '/from' and '/to'.");
         }
         return new AddCommand(new Event(description, from, to));
+    }
+
+    /**
+     * Parses a date filter command string into a DateFilterCommand.
+     *
+     * @param input Command string containing the command keyword and date.
+     * @return DateFilterCommand with the parsed target date.
+     * @throws FoodieloverException If date argument is missing or in an invalid format.
+     */
+    private static Command parseDateFilter(String input) throws FoodieloverException {
+        String keyword = (input.equals("on") || input.startsWith("on ")) ? "on" : "date";
+        String argument = input.substring(keyword.length()).trim();
+        if (argument.isEmpty()) {
+            throw new FoodieloverException(
+                    "Please enter a date after '" + keyword + "' (e.g., 2019-10-15 or 2/12/2019).");
+        }
+        LocalDate date = DateTimeParser.parseDate(argument);
+        if (date == null) {
+            throw new FoodieloverException(
+                    "Please enter a valid date in the format yyyy-mm-dd or d/M/yyyy (e.g., 2019-10-15 or 2/12/2019).");
+        }
+        return new DateFilterCommand(date);
     }
 }

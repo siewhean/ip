@@ -1,21 +1,67 @@
 package foodielover.task;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import foodielover.parser.DateTimeParser;
+
 /**
  * Represents a deadline task that needs to be done before a specific time.
  */
 public class Deadline extends Task {
-    /** Deadline due date/time. */
+    /** Raw due date/time string of the deadline. */
     protected String by;
+
+    /** Parsed LocalDate if applicable, otherwise null. */
+    protected LocalDate dueDate;
+
+    /** Parsed LocalDateTime if applicable, otherwise null. */
+    protected LocalDateTime dueDateTime;
 
     /**
      * Constructs a new Deadline task with the specified description and due date/time.
      *
      * @param description Description of the deadline task.
-     * @param by Due date/time of the deadline.
+     * @param by Due date/time string of the deadline.
      */
     public Deadline(String description, String by) {
         super(description);
         this.by = by;
+        this.dueDateTime = DateTimeParser.parseDateTime(by);
+        if (this.dueDateTime != null) {
+            this.dueDate = this.dueDateTime.toLocalDate();
+        } else {
+            this.dueDate = DateTimeParser.parseDate(by);
+        }
+    }
+
+    /**
+     * Checks if this deadline is due on the specified date.
+     *
+     * @param targetDate Date to compare against.
+     * @return True if the deadline date matches the target date, false otherwise.
+     */
+    @Override
+    public boolean isOnDate(LocalDate targetDate) {
+        return dueDate != null && dueDate.equals(targetDate);
+    }
+
+    /**
+     * Returns the parsed due date, or null if no valid date was parsed.
+     *
+     * @return Parsed LocalDate or null.
+     */
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    /**
+     * Returns the parsed due date-time, or null if no valid date-time was parsed.
+     *
+     * @return Parsed LocalDateTime or null.
+     */
+    public LocalDateTime getDueDateTime() {
+        return dueDateTime;
     }
 
     /**
@@ -35,6 +81,14 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        String displayBy;
+        if (dueDateTime != null) {
+            displayBy = DateTimeParser.formatDateTime(dueDateTime);
+        } else if (dueDate != null) {
+            displayBy = DateTimeParser.formatDate(dueDate);
+        } else {
+            displayBy = by;
+        }
+        return "[D]" + super.toString() + " (by: " + displayBy + ")";
     }
 }
