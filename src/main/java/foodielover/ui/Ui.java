@@ -59,21 +59,14 @@ public class Ui {
     }
 
     /**
-     * Prints the startup banner and welcome greeting.
+     * Displays the welcome greeting and banner to the user.
      */
-    public void showGreeting() {
+    public void showWelcome() {
         showLine();
         System.out.println(BANNER);
         System.out.println("Hello! I'm Foodielover.");
         System.out.println("What can I do for you?");
         showLine();
-    }
-
-    /**
-     * Displays the welcome greeting and banner to the user.
-     */
-    public void showWelcome() {
-        showGreeting();
     }
 
     /**
@@ -111,15 +104,25 @@ public class Ui {
     }
 
     /**
+     * Prints a header followed by a numbered list of tasks.
+     *
+     * @param header Header message displayed before the list.
+     * @param tasks List of tasks to display.
+     */
+    private void showNumberedTasks(String header, List<Task> tasks) {
+        System.out.println(header);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.get(i));
+        }
+    }
+
+    /**
      * Prints all tasks currently stored in the task list.
      *
      * @param tasks List of tasks to display.
      */
     public void showTaskList(List<Task> tasks) {
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
-        }
+        showNumberedTasks("Here are the tasks in your list:", tasks);
     }
 
     /**
@@ -143,10 +146,7 @@ public class Ui {
             System.out.println("No tasks found occurring on " + formattedDate + ".");
             return;
         }
-        System.out.println("Here are the tasks occurring on " + formattedDate + ":");
-        for (int i = 0; i < matchingTasks.size(); i++) {
-            System.out.println((i + 1) + "." + matchingTasks.get(i));
-        }
+        showNumberedTasks("Here are the tasks occurring on " + formattedDate + ":", matchingTasks);
     }
 
     /**
@@ -159,10 +159,7 @@ public class Ui {
             System.out.println("No matching tasks found in your list.");
             return;
         }
-        System.out.println("Here are the matching tasks in your list:");
-        for (int i = 0; i < matchingTasks.size(); i++) {
-            System.out.println((i + 1) + "." + matchingTasks.get(i));
-        }
+        showNumberedTasks("Here are the matching tasks in your list:", matchingTasks);
     }
 
     /**

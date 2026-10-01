@@ -1,7 +1,5 @@
 package foodielover.command;
 
-import java.io.IOException;
-
 import foodielover.storage.Storage;
 import foodielover.task.Task;
 import foodielover.task.TaskList;
@@ -33,11 +31,7 @@ public class AddCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         tasks.add(task);
-        try {
-            storage.save(tasks);
-        } catch (IOException exception) {
-            ui.showSaveError(exception.getMessage());
-        }
+        saveTasks(tasks, storage, ui);
         ui.showTaskAdded(task, tasks.size());
     }
 }

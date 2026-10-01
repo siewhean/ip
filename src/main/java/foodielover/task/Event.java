@@ -10,22 +10,22 @@ import foodielover.parser.DateTimeParser;
  */
 public class Event extends Task {
     /** Raw start date/time string of the event. */
-    protected String from;
+    private final String from;
 
     /** Raw end date/time string of the event. */
-    protected String to;
+    private final String to;
 
     /** Parsed start date if applicable, otherwise null. */
-    protected LocalDate startDate;
+    private final LocalDate startDate;
 
     /** Parsed start date-time if applicable, otherwise null. */
-    protected LocalDateTime startDateTime;
+    private final LocalDateTime startDateTime;
 
     /** Parsed end date if applicable, otherwise null. */
-    protected LocalDate endDate;
+    private final LocalDate endDate;
 
     /** Parsed end date-time if applicable, otherwise null. */
-    protected LocalDateTime endDateTime;
+    private final LocalDateTime endDateTime;
 
     /**
      * Constructs a new Event task with the specified description and start/end time.
@@ -40,18 +40,10 @@ public class Event extends Task {
         this.to = to;
 
         this.startDateTime = DateTimeParser.parseDateTime(from);
-        if (this.startDateTime != null) {
-            this.startDate = this.startDateTime.toLocalDate();
-        } else {
-            this.startDate = DateTimeParser.parseDate(from);
-        }
+        this.startDate = DateTimeParser.resolveDate(from, this.startDateTime);
 
         this.endDateTime = DateTimeParser.parseDateTime(to);
-        if (this.endDateTime != null) {
-            this.endDate = this.endDateTime.toLocalDate();
-        } else {
-            this.endDate = DateTimeParser.parseDate(to);
-        }
+        this.endDate = DateTimeParser.resolveDate(to, this.endDateTime);
     }
 
     /**
@@ -89,25 +81,8 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        String displayFrom = formatDisplayTime(from, startDate, startDateTime);
-        String displayTo = formatDisplayTime(to, endDate, endDateTime);
+        String displayFrom = DateTimeParser.formatDisplay(from, startDate, startDateTime);
+        String displayTo = DateTimeParser.formatDisplay(to, endDate, endDateTime);
         return "[E]" + super.toString() + " (from: " + displayFrom + " to: " + displayTo + ")";
-    }
-
-    /**
-     * Formats the date/time string for display.
-     *
-     * @param raw Raw input string.
-     * @param date Parsed LocalDate if present.
-     * @param dateTime Parsed LocalDateTime if present.
-     * @return Formatted display string.
-     */
-    private String formatDisplayTime(String raw, LocalDate date, LocalDateTime dateTime) {
-        if (dateTime != null) {
-            return DateTimeParser.formatDateTime(dateTime);
-        } else if (date != null) {
-            return DateTimeParser.formatDate(date);
-        }
-        return raw;
     }
 }

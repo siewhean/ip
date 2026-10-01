@@ -45,6 +45,18 @@ public class DateTimeParserTest {
         LocalDateTime dt2 = DateTimeParser.parseDateTime("2/12/2019 18:00");
         assertNotNull(dt2);
         assertEquals(LocalDateTime.of(2019, 12, 2, 18, 0), dt2);
+
+        LocalDateTime dt3 = DateTimeParser.parseDateTime("2019-10-15 9:00");
+        assertNotNull(dt3);
+        assertEquals(LocalDateTime.of(2019, 10, 15, 9, 0), dt3);
+
+        LocalDateTime dt4 = DateTimeParser.parseDateTime("2019-10-15 900");
+        assertNotNull(dt4);
+        assertEquals(LocalDateTime.of(2019, 10, 15, 9, 0), dt4);
+
+        LocalDateTime dt5 = DateTimeParser.parseDateTime("15/10/2019 9:00");
+        assertNotNull(dt5);
+        assertEquals(LocalDateTime.of(2019, 10, 15, 9, 0), dt5);
     }
 
     @Test
@@ -60,6 +72,8 @@ public class DateTimeParserTest {
         assertTrue(DateTimeParser.isDateLike("2019-02-30"));
         assertTrue(DateTimeParser.isDateLike("2/12/2019 1800"));
         assertTrue(DateTimeParser.isDateLike("15/10/2019"));
+        assertTrue(DateTimeParser.isDateLike("2019-10-15 9:00"));
+        assertTrue(DateTimeParser.isDateLike("2019-10-15 900"));
 
         assertFalse(DateTimeParser.isDateLike("June 6th"));
         assertFalse(DateTimeParser.isDateLike("tonight"));
@@ -74,5 +88,25 @@ public class DateTimeParserTest {
 
         LocalDateTime dateTime = LocalDateTime.of(2019, 12, 2, 18, 0);
         assertEquals("Dec 02 2019, 6:00PM", DateTimeParser.formatDateTime(dateTime));
+    }
+
+    @Test
+    public void resolveDate_variousInputs_resolvedCorrectly() {
+        LocalDateTime dt = LocalDateTime.of(2026, 10, 15, 9, 0);
+        assertEquals(LocalDate.of(2026, 10, 15), DateTimeParser.resolveDate("ignored", dt));
+
+        assertEquals(LocalDate.of(2026, 10, 15), DateTimeParser.resolveDate("2026-10-15", null));
+        assertNull(DateTimeParser.resolveDate("tonight", null));
+    }
+
+    @Test
+    public void formatDisplay_variousInputs_formattedCorrectly() {
+        LocalDateTime dt = LocalDateTime.of(2026, 12, 2, 18, 0);
+        assertEquals("Dec 02 2026, 6:00PM", DateTimeParser.formatDisplay("raw", null, dt));
+
+        LocalDate d = LocalDate.of(2026, 10, 15);
+        assertEquals("Oct 15 2026", DateTimeParser.formatDisplay("raw", d, null));
+
+        assertEquals("tonight", DateTimeParser.formatDisplay("tonight", null, null));
     }
 }
