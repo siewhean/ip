@@ -1,7 +1,5 @@
 # Foodielover
 
-[![CI](https://github.com/siewhean/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/siewhean/ip/actions)
-
 **Foodielover** is a desktop task management application optimized for users who prefer working through a Command Line Interface (CLI). Designed for students, professionals, and food lovers alike, it allows managing tasks, deadlines, and events faster than traditional GUI-based apps.
 
 ---

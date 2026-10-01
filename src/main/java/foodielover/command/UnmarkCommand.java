@@ -1,7 +1,5 @@
 package foodielover.command;
 
-import java.io.IOException;
-
 import foodielover.FoodieloverException;
 import foodielover.storage.Storage;
 import foodielover.task.Task;
@@ -44,11 +42,7 @@ public class UnmarkCommand extends Command {
         }
         Task task = tasks.get(taskIndex);
         task.markAsUndone();
-        try {
-            storage.save(tasks);
-        } catch (IOException exception) {
-            ui.showSaveError(exception.getMessage());
-        }
+        saveTasks(tasks, storage, ui);
         ui.showTaskUnmarked(task);
     }
 }

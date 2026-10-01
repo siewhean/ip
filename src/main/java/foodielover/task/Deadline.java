@@ -10,13 +10,13 @@ import foodielover.parser.DateTimeParser;
  */
 public class Deadline extends Task {
     /** Raw due date/time string of the deadline. */
-    protected String by;
+    private final String by;
 
     /** Parsed LocalDate if applicable, otherwise null. */
-    protected LocalDate dueDate;
+    private final LocalDate dueDate;
 
     /** Parsed LocalDateTime if applicable, otherwise null. */
-    protected LocalDateTime dueDateTime;
+    private final LocalDateTime dueDateTime;
 
     /**
      * Constructs a new Deadline task with the specified description and due date/time.
@@ -28,11 +28,7 @@ public class Deadline extends Task {
         super(description);
         this.by = by;
         this.dueDateTime = DateTimeParser.parseDateTime(by);
-        if (this.dueDateTime != null) {
-            this.dueDate = this.dueDateTime.toLocalDate();
-        } else {
-            this.dueDate = DateTimeParser.parseDate(by);
-        }
+        this.dueDate = DateTimeParser.resolveDate(by, this.dueDateTime);
     }
 
     /**
@@ -81,14 +77,7 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        String displayBy;
-        if (dueDateTime != null) {
-            displayBy = DateTimeParser.formatDateTime(dueDateTime);
-        } else if (dueDate != null) {
-            displayBy = DateTimeParser.formatDate(dueDate);
-        } else {
-            displayBy = by;
-        }
+        String displayBy = DateTimeParser.formatDisplay(by, dueDate, dueDateTime);
         return "[D]" + super.toString() + " (by: " + displayBy + ")";
     }
 }

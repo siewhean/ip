@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,6 +25,12 @@ public class Storage {
     /** Target file path for task persistence. */
     private final String filePath;
 
+    /** Indicates whether a backup has already been created during the current application session. */
+    private boolean hasBackedUpThisSession;
+
+    /** Corrupted lines encountered during the most recent load operation. */
+    private final List<String> corruptedLines;
+
     /**
      * Constructs a new Storage instance with the specified file path.
      *
@@ -31,17 +38,19 @@ public class Storage {
      */
     public Storage(String filePath) {
         this.filePath = filePath;
+        this.hasBackedUpThisSession = false;
+        this.corruptedLines = new ArrayList<>();
     }
 
     /**
      * Loads and returns tasks saved in the storage file.
-     * Skips corrupted lines or missing files gracefully.
+     * Corrupted lines are skipped and recorded, accessible via {@link #getCorruptedLines()}.
      *
      * @return List of tasks loaded from the storage file.
-     * @throws FoodieloverException If a fatal storage error occurs.
      */
-    public List<Task> load() throws FoodieloverException {
+    public List<Task> load() {
         List<Task> loadedTasks = new ArrayList<>();
+        corruptedLines.clear();
         File file = new File(filePath);
         if (!file.exists()) {
             return loadedTasks;
@@ -57,7 +66,7 @@ public class Storage {
                     Task task = parseTaskLine(line);
                     loadedTasks.add(task);
                 } catch (FoodieloverException exception) {
-                    System.out.println("Warning: Skipping corrupted task entry in data file: " + line);
+                    corruptedLines.add(line);
                 }
             }
         } catch (FileNotFoundException exception) {
@@ -67,7 +76,17 @@ public class Storage {
     }
 
     /**
+     * Returns an unmodifiable list of corrupted lines encountered during loading.
+     *
+     * @return Unmodifiable list of corrupted file lines.
+     */
+    public List<String> getCorruptedLines() {
+        return Collections.unmodifiableList(corruptedLines);
+    }
+
+    /**
      * Saves the provided list of tasks to the storage file.
+     * Creates a backup copy before the first save of the session.
      *
      * @param tasks List of tasks to write to disk.
      * @throws IOException If writing to the file fails.
@@ -79,9 +98,10 @@ public class Storage {
             parentDir.mkdirs();
         }
 
-        if (file.exists()) {
+        if (file.exists() && !hasBackedUpThisSession) {
             File backupFile = new File(filePath + ".bak");
             Files.copy(file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            hasBackedUpThisSession = true;
         }
 
         try (FileWriter writer = new FileWriter(file)) {

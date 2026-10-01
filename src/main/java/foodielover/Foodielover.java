@@ -37,11 +37,9 @@ public class Foodielover {
     public Foodielover(String filePath) {
         this.ui = new Ui();
         this.storage = new Storage(filePath);
-        try {
-            this.tasks = new TaskList(storage.load());
-        } catch (FoodieloverException exception) {
-            ui.showError(exception.getMessage());
-            this.tasks = new TaskList();
+        this.tasks = new TaskList(storage.load());
+        for (String corruptedLine : storage.getCorruptedLines()) {
+            ui.showCorruptedLineWarning(corruptedLine);
         }
     }
 

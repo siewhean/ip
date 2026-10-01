@@ -25,14 +25,14 @@ public class DateTimeParser {
 
     /** Supported input date-time formatters. */
     private static final DateTimeFormatter[] DATE_TIME_INPUT_FORMATTERS = new DateTimeFormatter[] {
-            DateTimeFormatter.ofPattern("uuuu-M-d HHmm").withResolverStyle(ResolverStyle.STRICT),
-            DateTimeFormatter.ofPattern("uuuu-M-d HH:mm").withResolverStyle(ResolverStyle.STRICT),
-            DateTimeFormatter.ofPattern("d/M/uuuu HHmm").withResolverStyle(ResolverStyle.STRICT),
-            DateTimeFormatter.ofPattern("d/M/uuuu HH:mm").withResolverStyle(ResolverStyle.STRICT),
-            DateTimeFormatter.ofPattern("d-M-uuuu HHmm").withResolverStyle(ResolverStyle.STRICT),
-            DateTimeFormatter.ofPattern("d-M-uuuu HH:mm").withResolverStyle(ResolverStyle.STRICT),
-            DateTimeFormatter.ofPattern("uuuu/M/d HHmm").withResolverStyle(ResolverStyle.STRICT),
-            DateTimeFormatter.ofPattern("uuuu/M/d HH:mm").withResolverStyle(ResolverStyle.STRICT)
+            DateTimeFormatter.ofPattern("uuuu-M-d Hmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("uuuu-M-d H:mm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d/M/uuuu Hmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d/M/uuuu H:mm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d-M-uuuu Hmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("d-M-uuuu H:mm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("uuuu/M/d Hmm").withResolverStyle(ResolverStyle.STRICT),
+            DateTimeFormatter.ofPattern("uuuu/M/d H:mm").withResolverStyle(ResolverStyle.STRICT)
     };
 
     /** Supported input date formatters. */
@@ -122,5 +122,36 @@ public class DateTimeParser {
      */
     public static String formatDateTime(LocalDateTime dateTime) {
         return dateTime.format(DATE_TIME_OUTPUT_FORMATTER);
+    }
+
+    /**
+     * Resolves the LocalDate from the parsed LocalDateTime or by parsing as a LocalDate.
+     *
+     * @param text Raw date or date-time text.
+     * @param dateTime Parsed LocalDateTime, or null.
+     * @return Resolved LocalDate, or null if unparseable.
+     */
+    public static LocalDate resolveDate(String text, LocalDateTime dateTime) {
+        if (dateTime != null) {
+            return dateTime.toLocalDate();
+        }
+        return parseDate(text);
+    }
+
+    /**
+     * Formats a raw text or parsed date/time for display.
+     *
+     * @param raw Raw input text fallback.
+     * @param date Parsed LocalDate, if available.
+     * @param dateTime Parsed LocalDateTime, if available.
+     * @return Formatted date/time string, or raw text if unparsed.
+     */
+    public static String formatDisplay(String raw, LocalDate date, LocalDateTime dateTime) {
+        if (dateTime != null) {
+            return formatDateTime(dateTime);
+        } else if (date != null) {
+            return formatDate(date);
+        }
+        return raw;
     }
 }

@@ -78,7 +78,7 @@ Adds a simple task without any deadline or specific time constraints.
 
 Adds a task that must be completed before a specified due date or time using the `/by` delimiter.
 
-Foodielover recognizes standard date formats (such as `yyyy-MM-dd`, `d/M/yyyy`, `d-M-yyyy`, or `yyyy/M/d` with optional 24-hour time like `HHmm` or `HH:mm`), pretty-printing them upon display (e.g. `Oct 15 2026` or `Dec 02 2026, 6:00PM`). Natural phrases like `June 6th` or `tonight` are also accepted. Calendar dates are strictly validated, preventing impossible inputs like `2019-02-30`.
+Foodielover recognizes standard date formats (such as `yyyy-MM-dd`, `d/M/yyyy`, `d-M-yyyy`, or `yyyy/M/d` with optional 24-hour time written as `HHmm`, `Hmm`, `HH:mm`, or `H:mm`, e.g. `1800`, `900`, `18:00`, or `9:00`), pretty-printing them upon display (e.g. `Oct 15 2026` or `Dec 02 2026, 6:00PM`). Natural phrases like `June 6th` or `tonight` are also accepted. Calendar dates are strictly validated, preventing impossible inputs like `2019-02-30`.
 
 - **Format:** `deadline DESCRIPTION /by DUE_DATE_OR_TIME`
 - **Examples:**
@@ -211,7 +211,7 @@ Exits Foodielover cleanly.
 ### Automatic Data Persistence & Backup
 
 - Foodielover automatically saves all additions, deletions, and status changes to disk at `./data/foodielover.txt`.
-- Before overwriting existing data, Foodielover creates a safe backup copy at `./data/foodielover.txt.bak`.
+- Before the first save of each session, Foodielover creates a safe backup copy at `./data/foodielover.txt.bak` holding your data as it was when the app started, protecting it from subsequent overwrites during that run.
 - When starting up, your tasks are loaded automatically. If any line is damaged or malformed, Foodielover issues a warning, skips the damaged entry, and safely loads the rest.
 
 ---

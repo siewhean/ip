@@ -1,5 +1,7 @@
 package foodielover.command;
 
+import java.io.IOException;
+
 import foodielover.FoodieloverException;
 import foodielover.storage.Storage;
 import foodielover.task.TaskList;
@@ -32,5 +34,20 @@ public abstract class Command {
      */
     public boolean isExit() {
         return false;
+    }
+
+    /**
+     * Saves the current task list to storage and displays an error message if saving fails.
+     *
+     * @param tasks Task list to persist.
+     * @param storage Storage handler.
+     * @param ui User interface for error reporting.
+     */
+    protected void saveTasks(TaskList tasks, Storage storage, Ui ui) {
+        try {
+            storage.save(tasks);
+        } catch (IOException exception) {
+            ui.showSaveError(exception.getMessage());
+        }
     }
 }
